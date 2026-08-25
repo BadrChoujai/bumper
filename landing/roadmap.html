@@ -1,0 +1,455 @@
+<title>Bumper Roadmap</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ground: #f6f7f5;
+    --surface: #ffffff;
+    --surface-strong: #edf1ea;
+    --border: #dde2d8;
+    --border-strong: #c7cec0;
+    --text-primary: #16201a;
+    --text-secondary: #4c5347;
+    --text-tertiary: #5c6355;
+    --accent: #226e46;
+    --accent-strong: #185536;
+    --accent-bright: #2f8f5b;
+    --accent-soft: #e3f1e8;
+    --accent-contrast: #ffffff;
+    --danger: #a94a3b;
+    --danger-strong: #833a2d;
+    --danger-bright: #c85c4a;
+    --danger-soft: #fbe9e5;
+    --danger-contrast: #ffffff;
+    --focus-ring: #226e46;
+
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body: 'Manrope', 'Manrope Fallback', system-ui, sans-serif;
+    --font-mono: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, monospace;
+
+    --s-1: 4px; --s-2: 6px; --s-3: 8px; --s-4: 10px; --s-5: 12px;
+    --s-6: 14px; --s-7: 16px; --s-8: 20px; --s-9: 40px;
+
+    --text-2xs: 10.5px; --text-xs: 12px; --text-sm: 14px; --text-md: 15px; --text-lg: 16px;
+    --text-xl: 18px; --text-2xl: 20px; --text-3xl: 26px; --text-4xl: 44px;
+
+    --radius-xs: 5px; --radius-sm: 8px; --radius-pill: 999px;
+    --duration: 150ms;
+    --duration-fast: 180ms;
+    --duration-normal: 200ms;
+    --duration-slow: 350ms;
+
+    --shadow-inset-2:
+      inset 0 1px 0 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 0 rgba(0,0,0,0.18),
+      0 1px 2px 0 rgba(0,0,0,0.35);
+
+    --terminal-bg: #10140f;
+    --terminal-surface: #171d13;
+    --terminal-text: #e7ece3;
+    --terminal-muted: #7c8674;
+    --terminal-prompt: #6bcf98;
+    --terminal-border: #262d1f;
+
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0a130e; --surface: #0f1a14; --surface-strong: #16241b;
+      --border: #24352a; --border-strong: #33472f;
+      --text-primary: #edf3ec; --text-secondary: #a9b6a1; --text-tertiary: #77876f;
+      --accent: #4bb37c; --accent-strong: #6bcf98; --accent-bright: #4bb37c;
+      --accent-soft: #16301f; --accent-contrast: #06170e;
+      --danger: #e0836a; --danger-strong: #f0a488; --danger-bright: #e0836a;
+      --danger-soft: #351b13; --danger-contrast: #1a0906;
+      --focus-ring: #6bcf98;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0a130e; --surface: #0f1a14; --surface-strong: #16241b;
+    --border: #24352a; --border-strong: #33472f;
+    --text-primary: #edf3ec; --text-secondary: #a9b6a1; --text-tertiary: #77876f;
+    --accent: #4bb37c; --accent-strong: #6bcf98; --accent-bright: #4bb37c;
+    --accent-soft: #16301f; --accent-contrast: #06170e;
+    --danger: #e0836a; --danger-strong: #f0a488; --danger-bright: #e0836a;
+    --danger-soft: #351b13; --danger-contrast: #1a0906;
+    --focus-ring: #6bcf98;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    font-size: var(--text-md);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  h1, h2, h3, p { margin: 0; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  code, .mono { font-family: var(--font-mono); }
+  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
+  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--s-7); }
+  @media (max-width: 640px) { .wrap { padding: 0 var(--s-5); } }
+
+  /* ---- header (matches the main site) ---- */
+  header.site {
+    position: sticky; top: 0; z-index: 20;
+    background: color-mix(in srgb, var(--ground) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-nav { display: flex; align-items: center; justify-content: space-between; padding: var(--s-5) 0; }
+  .wordmark { display: flex; align-items: center; gap: var(--s-3); font-family: var(--font-body); font-weight: 800; font-size: var(--text-xl); text-decoration: none; color: var(--text-primary); }
+  .wordmark .mark { width: 26px; height: 26px; border-radius: var(--radius-sm); background: var(--accent); display: grid; place-items: center; color: var(--accent-contrast); font-size: 15px; }
+  .site-nav nav { display: flex; gap: var(--s-7); align-items: center; }
+  .site-nav nav a { text-decoration: none; color: var(--text-secondary); font-size: var(--text-sm); font-weight: 500; }
+  .site-nav nav a:hover { color: var(--text-primary); }
+
+  /* ---- wiki page frame ---- */
+  .page-head { padding: var(--s-9) 0 var(--s-7); border-bottom: 1px solid var(--border); }
+  .eyebrow {
+    font-family: var(--font-mono); font-size: var(--text-2xs); font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--accent-strong); display: inline-flex; align-items: center; gap: var(--s-3);
+  }
+  .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .page-title { font-family: var(--font-display); font-weight: 400; font-size: var(--text-4xl); line-height: 1.15; letter-spacing: -0.015em; margin-top: var(--s-4); }
+  .page-sub { margin-top: var(--s-4); color: var(--text-secondary); max-width: 62ch; }
+  .last-verified { margin-top: var(--s-5); font-size: var(--text-xs); color: var(--text-tertiary); font-family: var(--font-mono); }
+
+  .wiki-body { display: grid; grid-template-columns: 220px 1fr; gap: var(--s-9); padding: var(--s-8) 0 var(--s-9); align-items: start; }
+  @media (max-width: 860px) { .wiki-body { grid-template-columns: 1fr; } }
+
+  .toc { position: sticky; top: 88px; }
+  @media (max-width: 860px) { .toc { position: static; margin-bottom: var(--s-7); } }
+  .toc-label { font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-tertiary); margin-bottom: var(--s-4); display: block; }
+  .toc ul { display: flex; flex-direction: column; gap: var(--s-3); }
+  .toc a { font-size: var(--text-sm); color: var(--text-secondary); text-decoration: none; }
+  .toc a:hover { color: var(--accent-strong); }
+
+  .wiki-main { display: flex; flex-direction: column; gap: var(--s-9); min-width: 0; }
+  .wiki-section h2 {
+    font-family: var(--font-body); font-weight: 700; font-size: var(--text-2xl);
+    scroll-margin-top: 96px;
+  }
+  .wiki-section .lede { margin-top: var(--s-3); color: var(--text-secondary); max-width: 62ch; }
+
+  /* ---- status legend ---- */
+  .legend { display: flex; flex-wrap: wrap; gap: var(--s-5); margin-top: var(--s-6); padding: var(--s-4) var(--s-5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .legend-item { display: flex; align-items: center; gap: var(--s-2); font-size: var(--text-xs); color: var(--text-secondary); }
+
+  /* ---- status pills (shared) ---- */
+  .pill { display: inline-flex; align-items: center; gap: var(--s-2); font-family: var(--font-mono); font-size: var(--text-xs); padding: var(--s-1) var(--s-3); border-radius: var(--radius-pill); white-space: nowrap; }
+  .pill.live { background: var(--accent-soft); color: var(--accent-strong); }
+  .pill.partial { background: var(--danger-soft); color: var(--danger-strong); }
+  .pill.planned { background: var(--surface-strong); color: var(--text-secondary); border: 1px dashed var(--border-strong); }
+  .pill.watching { background: var(--surface-strong); color: var(--text-tertiary); border: 1px solid var(--border-strong); }
+  .pill.done { background: var(--accent-soft); color: var(--accent-strong); }
+
+  /* ---- generic wiki table ---- */
+  .wiki-table-wrap { margin-top: var(--s-6); overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  table.wiki-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); background: var(--surface); }
+  table.wiki-table th, table.wiki-table td { text-align: left; padding: var(--s-4) var(--s-5); vertical-align: top; }
+  table.wiki-table thead th {
+    font-family: var(--font-mono); font-size: var(--text-xs); text-transform: uppercase; letter-spacing: 0.04em;
+    color: var(--text-tertiary); background: var(--surface-strong); border-bottom: 1px solid var(--border);
+  }
+  table.wiki-table tbody tr + tr { border-top: 1px solid var(--border); }
+  table.wiki-table td.agent-name { font-weight: 700; font-family: var(--font-body); white-space: nowrap; }
+  table.wiki-table td .detail { display: block; margin-top: var(--s-2); color: var(--text-tertiary); font-size: var(--text-xs); }
+  table.wiki-table code { font-size: var(--text-xs); background: var(--surface-strong); padding: 2px var(--s-2); border-radius: 4px; }
+
+  /* ---- pricing phase cards ---- */
+  .phase-list { margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-5); }
+  .phase {
+    display: grid; grid-template-columns: 140px 1fr; gap: var(--s-6);
+    padding: var(--s-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+  }
+  @media (max-width: 640px) { .phase { grid-template-columns: 1fr; gap: var(--s-3); } }
+  .phase-tag { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
+  .phase-title { font-family: var(--font-body); font-weight: 700; font-size: var(--text-lg); margin-top: var(--s-2); }
+  .phase p.body { margin-top: var(--s-3); color: var(--text-secondary); font-size: var(--text-sm); }
+
+  /* ---- milestones ---- */
+  .milestone-list { margin-top: var(--s-6); display: flex; flex-direction: column; }
+  .milestone {
+    display: grid; grid-template-columns: 22px 1fr auto; gap: var(--s-4); align-items: start;
+    padding: var(--s-5) 0; border-top: 1px solid var(--border);
+  }
+  .milestone:first-child { border-top: none; }
+  .milestone-dot { width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; }
+  .milestone-dot.done { background: var(--accent); }
+  .milestone-dot.next { background: var(--danger-bright); }
+  .milestone-dot.planned { background: var(--border-strong); }
+  .milestone-body h3 { font-size: var(--text-md); font-weight: 600; }
+  .milestone-body p { margin-top: var(--s-2); color: var(--text-secondary); font-size: var(--text-sm); }
+
+  /* ---- changelog ---- */
+  .changelog { margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-5); }
+  .changelog-entry { display: grid; grid-template-columns: 110px 1fr; gap: var(--s-5); }
+  @media (max-width: 560px) { .changelog-entry { grid-template-columns: 1fr; gap: var(--s-2); } }
+  .changelog-date { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-tertiary); padding-top: 2px; }
+  .changelog-body p { color: var(--text-secondary); font-size: var(--text-sm); }
+  .changelog-body .cmd { display: inline-block; margin-top: var(--s-2); font-family: var(--font-mono); font-size: var(--text-xs); background: var(--terminal-bg); color: var(--terminal-text); padding: var(--s-2) var(--s-3); border-radius: 4px; }
+
+  footer.site { padding: var(--s-9) 0; border-top: 1px solid var(--border); }
+  .footer-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-5); }
+  .footer-note { font-size: var(--text-sm); color: var(--text-tertiary); }
+  .footer-links { display: flex; gap: var(--s-6); }
+  .footer-links a { font-size: var(--text-sm); color: var(--text-secondary); text-decoration: none; }
+  .footer-links a:hover { color: var(--accent-strong); }
+</style>
+
+<header class="site">
+  <div class="wrap site-nav">
+    <a class="wordmark" href="https://claude.ai/code/artifact/dfc02866-9a86-4f96-994f-c4cbcfac707c">
+      <span class="mark">B</span>
+      Bumper
+    </a>
+    <nav>
+      <a href="https://claude.ai/code/artifact/dfc02866-9a86-4f96-994f-c4cbcfac707c">Site</a>
+      <a href="https://claude.ai/code/artifact/dfc02866-9a86-4f96-994f-c4cbcfac707c#guide">Install</a>
+      <a href="https://github.com" rel="noopener">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="wrap page-head">
+    <span class="eyebrow">Reference</span>
+    <h1 class="page-title">Roadmap &amp; status</h1>
+    <p class="page-sub">Everything Bumper actually does today, what's still limited, and what's planned — kept in sync with the same plan the product is built from, not written separately as marketing copy.</p>
+    <p class="last-verified">Last verified against real accounts: August 25, 2026</p>
+  </div>
+
+  <div class="wrap wiki-body">
+    <nav class="toc" aria-label="Page sections">
+      <span class="toc-label">On this page</span>
+      <ul>
+        <li><a href="#pricing">Pricing rollout</a></li>
+        <li><a href="#agent-support">Agent support matrix</a></li>
+        <li><a href="#limitations">Known limitations &amp; fixes</a></li>
+        <li><a href="#milestones">Build milestones</a></li>
+        <li><a href="#changelog">Changelog</a></li>
+      </ul>
+    </nav>
+
+    <div class="wiki-main">
+      <section class="wiki-section" id="pricing">
+        <h2>Pricing rollout</h2>
+        <p class="lede">Rolled out in phases, deliberately — revenue comes after the product earns real usage, not before.</p>
+        <div class="phase-list">
+          <div class="phase">
+            <div>
+              <span class="phase-tag">Phase 1 · Now</span>
+              <span class="pill live" style="margin-top: var(--s-2); display: inline-flex;">Live</span>
+            </div>
+            <div>
+              <div class="phase-title">Free, no paywall</div>
+              <p class="body">Everything unlocked — every agent, unlimited checks, unlimited projects. Usage is being instrumented quietly in the background so the next phase's limits get set from real numbers, not guesses. Nothing is gated yet.</p>
+            </div>
+          </div>
+          <div class="phase">
+            <div>
+              <span class="phase-tag">Phase 2 · Planned</span>
+              <span class="pill planned" style="margin-top: var(--s-2); display: inline-flex;">Planned</span>
+            </div>
+            <div>
+              <div class="phase-title">Capped free + Pro tier</div>
+              <p class="body">A generous free monthly check limit, plus a paid Pro tier (target range €6–9/mo, priced against real observed usage) adding mobile push approval, unlimited projects, a code-explain companion, and a weekly plain-language digest.</p>
+            </div>
+          </div>
+          <div class="phase">
+            <div>
+              <span class="phase-tag">Phase 3 · Planned</span>
+              <span class="pill planned" style="margin-top: var(--s-2); display: inline-flex;">Planned</span>
+            </div>
+            <div>
+              <div class="phase-title">Team / Agency tier</div>
+              <p class="body">Target range €15–20/seat. Shared rule packs per client, a trust artifact to show clients what was protected against, multi-seat management. Only gets built once individual usage validates the product — not before.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="wiki-section" id="agent-support">
+        <h2>Agent support matrix</h2>
+        <p class="lede">Every row below has been checked against the agent's real, current documentation — and three of four against a real authenticated session, not just the docs.</p>
+
+        <div class="legend">
+          <span class="legend-item"><span class="pill live">Live</span> verified end to end against a real account</span>
+          <span class="legend-item"><span class="pill partial">Partial</span> real protection, reduced experience</span>
+          <span class="legend-item"><span class="pill watching">Watching</span> depends on the agent vendor, not on Bumper</span>
+        </div>
+
+        <div class="wiki-table-wrap">
+          <table class="wiki-table">
+            <thead>
+              <tr><th>Agent</th><th>Status</th><th>Hook mechanism</th><th>Verified how</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="agent-name">Claude Code</td>
+                <td><span class="pill live">Live</span></td>
+                <td><code>PreToolUse</code> hook, <code>.claude/settings.json</code><span class="detail">JSON stdin, <code>permissionDecision: allow|deny|escalate</code></span></td>
+                <td>Real hook fired: <code>rm -rf *</code> → denied, plain-English reason returned to the agent.</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Cursor</td>
+                <td><span class="pill live">Live</span></td>
+                <td><code>beforeShellExecution</code> / <code>beforeMCPExecution</code>, <code>.cursor/hooks.json</code><span class="detail">JSON stdin, <code>permission: allow|deny|ask</code></span></td>
+                <td>Real, signed-in Cursor account. Live <code>cursor-agent</code> session ran <code>rm -rf *</code> → blocked, file survived.</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Copilot CLI</td>
+                <td><span class="pill live">Live</span></td>
+                <td><code>preToolUse</code> hook, <code>.github/hooks/*.json</code> or <code>~/.copilot/hooks/*.json</code><span class="detail">camelCase stdin (<code>toolName</code>, <code>toolArgs</code>) — corrected after inspecting the real CLI's source, the generic docs described a different SDK's shape</span></td>
+                <td>Real, GitHub-authenticated <code>@github/copilot</code> session ran <code>rm -rf *</code> → denied automatically.</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Codex CLI</td>
+                <td><span class="pill partial">Partial</span></td>
+                <td>No live external-callout hook exists yet<span class="detail">Falls back to static <code>execpolicy</code> rules + Codex's own <code>approval_policy</code> prompt</span></td>
+                <td><span class="pill watching">Watching</span> for Codex CLI to expose a live hook — not something Bumper can build around on its own.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="wiki-section" id="limitations">
+        <h2>Known limitations &amp; fixes</h2>
+        <p class="lede">The same honesty standard as the rest of the site — including what's actually being fixed versus what's a permanent tradeoff.</p>
+        <div class="wiki-table-wrap">
+          <table class="wiki-table">
+            <thead>
+              <tr><th>Limitation</th><th>Status</th><th>Detail</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="agent-name">Protection needs the daemon running</td>
+                <td><span class="pill done">Fixed</span></td>
+                <td>Hooks fail <em>open</em> if <code>bumper start</code> isn't running — actions go through unchecked rather than getting stuck. Fixed: <code>bumper autostart enable</code> runs the daemon automatically on login (Startup folder on Windows, launchd on macOS, systemd on Linux — the Windows path is live-tested, macOS/Linux are implemented the same way but not yet run-tested on those platforms).</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Codex CLI has no live hook</td>
+                <td><span class="pill watching">Watching</span></td>
+                <td>Real parity gap. Bumper will wire in a live integration the moment Codex CLI exposes one — this depends on OpenAI's roadmap, not Bumper's.</td>
+              </tr>
+              <tr>
+                <td class="agent-name">Copilot CLI's schema isn't locked down</td>
+                <td><span class="pill done">Fixed</span></td>
+                <td>Verified against a real install, but Copilot CLI is young and could change its hook format. Fixed: every <code>bumper install copilot</code> now checks the installed version against the one actually tested (currently 1.0.80) and warns on drift instead of silently breaking.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="wiki-section" id="milestones">
+        <h2>Build milestones</h2>
+        <p class="lede">The actual sequence, tracked honestly — including what isn't done yet.</p>
+        <div class="milestone-list">
+          <div class="milestone">
+            <span class="milestone-dot done" aria-hidden="true"></span>
+            <div class="milestone-body">
+              <h3>Core daemon, policy engine, and plain-language explain layer</h3>
+              <p>Built and tested locally: YAML policy rules, pending-approval queue with timeout fallback, hand-curated plain-English templates per rule.</p>
+            </div>
+            <span class="pill done">Done</span>
+          </div>
+          <div class="milestone">
+            <span class="milestone-dot done" aria-hidden="true"></span>
+            <div class="milestone-body">
+              <h3>Default "vibe-coder danger pack" curated and tested</h3>
+              <p>Destructive deletes, force pushes, blind script execution, publish/DB-wipe commands, live secret keys — checked against real incident patterns.</p>
+            </div>
+            <span class="pill done">Done</span>
+          </div>
+          <div class="milestone">
+            <span class="milestone-dot next" aria-hidden="true"></span>
+            <div class="milestone-body">
+              <h3>Ship into vibe-coding communities, collect real catch stories</h3>
+              <p>The CLI works and is live-tested against three real agents. Not yet public — no OSS repo push, no community launch, no usage instrumentation live yet.</p>
+            </div>
+            <span class="pill planned">Next up</span>
+          </div>
+          <div class="milestone">
+            <span class="milestone-dot planned" aria-hidden="true"></span>
+            <div class="milestone-body">
+              <h3>Capped free tier + paid Pro tier</h3>
+              <p>Mobile push approval, unlimited projects, code-explain companion, weekly digest. Waits for real usage data from the milestone above.</p>
+            </div>
+            <span class="pill planned">Planned</span>
+          </div>
+          <div class="milestone">
+            <span class="milestone-dot planned" aria-hidden="true"></span>
+            <div class="milestone-body">
+              <h3>Team / Agency tier</h3>
+              <p>Only gets built once individual-user demand actually validates it.</p>
+            </div>
+            <span class="pill planned">Planned</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="wiki-section" id="changelog">
+        <h2>Changelog</h2>
+        <p class="lede">What's been verified, and against what — dated, not vague.</p>
+        <div class="changelog">
+          <div class="changelog-entry">
+            <span class="changelog-date">2026-08-25</span>
+            <div class="changelog-body">
+              <p>Shipped <code>bumper autostart enable|disable|status</code>. Windows uses the Startup folder (a hidden launcher script) rather than Task Scheduler, after Task Scheduler's own per-user logon task refused permission on the machine this was built on. Live-tested: ran the launcher exactly as Windows would at login, confirmed the daemon actually came up.</p>
+            </div>
+          </div>
+          <div class="changelog-entry">
+            <span class="changelog-date">2026-08-25</span>
+            <div class="changelog-body">
+              <p>Shipped Copilot CLI version-drift warnings. Reads the installed version straight from its own <code>package.json</code> rather than running <code>copilot --version</code>, which was found to crash under some sandboxed environments. Along the way, fixed a Windows-specific bug: invoking <code>npm</code> via <code>execFileSync</code> fails silently on Windows since npm is a <code>.cmd</code> file — switched to <code>execSync</code>.</p>
+            </div>
+          </div>
+          <div class="changelog-entry">
+            <span class="changelog-date">2026-08-25</span>
+            <div class="changelog-body">
+              <p>Copilot CLI integration corrected after inspecting the real <code>@github/copilot</code> v1.0.80 source — the config entry shape and stdin field names in the generic docs turned out to describe a different SDK, not this CLI.</p>
+              <span class="cmd">copilot -p "Run this exact shell command: rm -rf *" --allow-all-tools → denied</span>
+            </div>
+          </div>
+          <div class="changelog-entry">
+            <span class="changelog-date">2026-08-25</span>
+            <div class="changelog-body">
+              <p>Cursor integration verified against a real, signed-in <code>cursor-agent</code> session.</p>
+              <span class="cmd">agent -p "Run this exact shell command: rm -rf *" -f → blocked by hook</span>
+            </div>
+          </div>
+          <div class="changelog-entry">
+            <span class="changelog-date">2026-08-25</span>
+            <div class="changelog-body">
+              <p>Claude Code integration verified end to end — deny rule, timeout-to-deny, and human-approve paths all confirmed against the real daemon.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="wrap footer-row">
+    <span class="footer-note">This page is generated from the same plan the product is built from.</span>
+    <div class="footer-links">
+      <a href="https://claude.ai/code/artifact/dfc02866-9a86-4f96-994f-c4cbcfac707c">Back to site</a>
+      <a href="https://github.com" rel="noopener">GitHub</a>
+    </div>
+  </div>
+</footer>

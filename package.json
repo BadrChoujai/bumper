@@ -1,0 +1,24 @@
+{
+  "name": "bumper-guard",
+  "version": "0.1.0",
+  "description": "A plain-language safety net for vibe coders. Pauses risky things your AI assistant (Claude Code, Cursor, Codex CLI, Copilot CLI) is about to do, explains them in plain English, and lets you decide.",
+  "bin": {
+    "bumper": "./bin/bumper.js"
+  },
+  "main": "src/daemon.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node bin/bumper.js start"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "commander": "^12.1.0",
+    "express": "^4.21.2",
+    "js-yaml": "^4.1.0",
+    "zod": "^3.23.8"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

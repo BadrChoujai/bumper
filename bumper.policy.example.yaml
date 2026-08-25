@@ -1,0 +1,31 @@
+# Copy this to bumper.policy.yaml in your project (or ~/.bumper/policy.yaml
+# for every project) to customize what Bumper checks. If no policy file
+# exists, Bumper uses its built-in default rules automatically.
+
+default: ask          # allow | deny | ask  — what happens when nothing below matches
+timeout_seconds: 90    # how long to wait for you before falling back
+timeout_decision: deny # what happens if you don't respond in time
+
+rules:
+  - id: destructive-delete-broad
+    match:
+      command: "rm -rf *"
+    decision: deny
+    explain: "This would permanently delete files with no way to undo it."
+
+  - id: force-push
+    match:
+      command: "git push --force*"
+    decision: ask
+    explain: "This will overwrite the project's shared history. If you've shared this project with anyone else, their work could be lost."
+
+  - id: stripe-live-key
+    match:
+      content_pattern: "sk_live_[A-Za-z0-9]{10,}"
+    decision: ask
+    explain: "This looks like a real (live) Stripe secret key being written into {file}. If it ever ends up somewhere public, someone could use it to charge your account."
+
+  # Add your own rules the same way — match on `command` (glob), `file` (glob),
+  # or `content_pattern` (regex, checked against code being written), then set
+  # `decision` to allow / deny / ask, and write `explain` in plain English.
+  # {command}, {file}, and {tool} get filled in automatically.
