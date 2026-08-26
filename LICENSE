@@ -1,13 +1,13 @@
 Copyright (c) 2026 Badr Choujai. All rights reserved.
 
-This source code is made publicly available for review, evaluation, and
-personal, non-commercial use only.
+The published "bumper-guard" npm package (including its source, as shipped
+in the package itself) may be installed and used freely. The source
+repository this package is built from is private; this license governs
+the code either way.
 
 You MAY:
-  - read, study, and evaluate this source code
+  - read, study, and evaluate the source as shipped in the npm package
   - install and run the published "bumper-guard" package for your own use
-  - fork the repository privately for the purpose of proposing changes back
-    to the original project (e.g. a pull request)
 
 You MAY NOT, without prior written permission from the copyright holder:
   - redistribute, sell, sublicense, or rent this software or any derivative
