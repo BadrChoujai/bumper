@@ -8,6 +8,6 @@ module.exports = {
   STRIPE_SECRET_KEY: process.env.STRIPE_SECRET_KEY || null,
   STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET || null,
   STRIPE_PRICE_ID: process.env.STRIPE_PRICE_ID || null,
-  CHECKOUT_SUCCESS_URL: process.env.CHECKOUT_SUCCESS_URL || "https://bumperguard.dev/upgraded",
-  CHECKOUT_CANCEL_URL: process.env.CHECKOUT_CANCEL_URL || "https://bumperguard.dev/upgrade-cancelled",
+  CHECKOUT_SUCCESS_URL: process.env.CHECKOUT_SUCCESS_URL || "https://bumper-guard.pages.dev/",
+  CHECKOUT_CANCEL_URL: process.env.CHECKOUT_CANCEL_URL || "https://bumper-guard.pages.dev/#pricing",
 };
