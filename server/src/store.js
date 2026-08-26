@@ -1,135 +1,120 @@
-const fs = require("fs");
-const path = require("path");
-const { DATA_FILE, FREE_ASKS_PER_MONTH } = require("./config");
+const db = require("./db");
+const { FREE_ASKS_PER_MONTH } = require("./config");
 
-// Flat-file JSON store, fine for the volume a single small server sees early
-// on. Swap for real Postgres (Supabase/Neon) before this needs to scale past
-// one process or you care about surviving a disk-level failure.
-
-function ensureDataFile() {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, "{}");
-}
-
-function readAll() {
-  ensureDataFile();
-  try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
-  } catch {
-    return {};
-  }
-}
-
-// Serializes writes so concurrent requests can't clobber each other's changes.
-let writeQueue = Promise.resolve();
-function writeAll(data) {
-  writeQueue = writeQueue.then(
-    () => fs.promises.writeFile(DATA_FILE, JSON.stringify(data, null, 2)),
-    () => fs.promises.writeFile(DATA_FILE, JSON.stringify(data, null, 2))
-  );
-  return writeQueue;
+function startOfMonth(from = new Date()) {
+  return new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), 1)).toISOString().slice(0, 10);
 }
 
 function startOfNextMonth(from = new Date()) {
   return new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth() + 1, 1)).toISOString();
 }
 
-function freshFreeAccount(deviceId) {
-  return {
-    deviceId,
-    email: null,
-    plan: "free",
-    asksUsed: 0,
-    limit: FREE_ASKS_PER_MONTH,
-    resetAt: startOfNextMonth(),
-    stripeCustomerId: null,
-    stripeSubscriptionId: null,
-    createdAt: new Date().toISOString(),
-  };
-}
-
-// Lazily rolls a free account's counter over if its reset date has passed —
-// no cron job needed, the check happens on read/write.
-function applyReset(account) {
-  if (account.plan !== "free") return account;
-  if (new Date(account.resetAt).getTime() > Date.now()) return account;
-  account.asksUsed = 0;
-  account.resetAt = startOfNextMonth();
-  return account;
-}
-
 async function getOrCreate(deviceId) {
-  const all = readAll();
-  let account = all[deviceId];
-  if (!account) {
-    account = freshFreeAccount(deviceId);
-    all[deviceId] = account;
-    await writeAll(all);
-    return account;
-  }
-  const before = JSON.stringify(account);
-  account = applyReset(account);
-  if (JSON.stringify(account) !== before) {
-    all[deviceId] = account;
-    await writeAll(all);
-  }
-  return account;
+  const { rows } = await db.query(
+    `insert into accounts (device_id) values ($1)
+     on conflict (device_id) do update set device_id = excluded.device_id
+     returning *`,
+    [deviceId]
+  );
+  return rows[0];
 }
 
-function remaining(account) {
-  if (account.plan !== "free") return Infinity;
-  return Math.max(0, account.limit - account.asksUsed);
+// Read-only: current plan + remaining bumps this month, doesn't touch the counter.
+// Only called for free-plan accounts — callers branch on unlimitedSnapshot() first.
+async function getUsageSnapshot(accountId) {
+  const period = startOfMonth();
+  const { rows } = await db.query(
+    `select asks_used, asks_limit from usage_periods where account_id = $1 and period_start = $2`,
+    [accountId, period]
+  );
+  const limit = rows[0]?.asks_limit ?? FREE_ASKS_PER_MONTH;
+  const used = rows[0]?.asks_used ?? 0;
+  return { remaining: Math.max(0, limit - used), limit, resetAt: startOfNextMonth() };
 }
 
+// JSON can't carry Infinity (serializes to null), so non-free plans get an
+// explicit `unlimited: true` flag instead — the CLI and web inbox both key
+// off that, the same convention src/account.js uses client-side when no
+// quota server is configured at all.
+function unlimitedSnapshot(plan) {
+  return { plan, unlimited: true, remaining: null, limit: null, resetAt: null };
+}
+
+// Single atomic upsert-and-conditionally-increment: the WHERE clause on the
+// ON CONFLICT update makes the whole check-and-increment race-proof without
+// a separate lock — two simultaneous requests can't both squeak through at
+// the last bump.
 async function consume(deviceId) {
-  const all = readAll();
-  let account = all[deviceId] || freshFreeAccount(deviceId);
-  account = applyReset(account);
+  const account = await getOrCreate(deviceId);
 
   if (account.plan !== "free") {
-    all[deviceId] = account;
-    await writeAll(all);
-    return { allowed: true, plan: account.plan, remaining: Infinity };
+    return { allowed: true, ...unlimitedSnapshot(account.plan) };
   }
 
-  if (remaining(account) <= 0) {
-    all[deviceId] = account;
-    await writeAll(all);
-    return { allowed: false, plan: account.plan, remaining: 0, limit: account.limit, resetAt: account.resetAt };
+  const period = startOfMonth();
+  const { rows } = await db.query(
+    `insert into usage_periods (account_id, period_start, asks_used, asks_limit)
+     values ($1, $2, 1, $3)
+     on conflict (account_id, period_start)
+     do update set asks_used = usage_periods.asks_used + 1, updated_at = now()
+     where usage_periods.asks_used < usage_periods.asks_limit
+     returning asks_used, asks_limit`,
+    [account.id, period, FREE_ASKS_PER_MONTH]
+  );
+
+  if (rows[0]) {
+    const { asks_used, asks_limit } = rows[0];
+    return {
+      allowed: true,
+      plan: account.plan,
+      remaining: asks_limit - asks_used,
+      limit: asks_limit,
+      resetAt: startOfNextMonth(),
+    };
   }
 
-  account.asksUsed += 1;
-  all[deviceId] = account;
-  await writeAll(all);
-  return { allowed: true, plan: account.plan, remaining: remaining(account), limit: account.limit, resetAt: account.resetAt };
+  const snapshot = await getUsageSnapshot(account.id);
+  return { allowed: false, plan: account.plan, remaining: 0, limit: snapshot.limit, resetAt: snapshot.resetAt };
+}
+
+async function getAccountUsage(deviceId) {
+  const account = await getOrCreate(deviceId);
+  if (account.plan !== "free") return unlimitedSnapshot(account.plan);
+  const snapshot = await getUsageSnapshot(account.id);
+  return { plan: account.plan, ...snapshot };
 }
 
 async function linkCheckoutSession(deviceId, { stripeCustomerId, email }) {
-  const all = readAll();
-  const account = all[deviceId] || freshFreeAccount(deviceId);
-  account.stripeCustomerId = stripeCustomerId;
-  if (email) account.email = email;
-  all[deviceId] = account;
-  await writeAll(all);
-  return account;
+  const { rows } = await db.query(
+    `insert into accounts (device_id, stripe_customer_id, email)
+     values ($1, $2, $3)
+     on conflict (device_id) do update
+       set stripe_customer_id = excluded.stripe_customer_id,
+           email = coalesce(excluded.email, accounts.email),
+           updated_at = now()
+     returning *`,
+    [deviceId, stripeCustomerId, email || null]
+  );
+  return rows[0];
 }
 
 async function setPlanByCustomerId(stripeCustomerId, { plan, stripeSubscriptionId }) {
-  const all = readAll();
-  const deviceId = Object.keys(all).find((id) => all[id].stripeCustomerId === stripeCustomerId);
-  if (!deviceId) return null;
-  all[deviceId].plan = plan;
-  all[deviceId].stripeSubscriptionId = stripeSubscriptionId ?? all[deviceId].stripeSubscriptionId;
-  await writeAll(all);
-  return all[deviceId];
+  const { rows } = await db.query(
+    `update accounts
+       set plan = $2,
+           stripe_subscription_id = coalesce($3, stripe_subscription_id),
+           updated_at = now()
+     where stripe_customer_id = $1
+     returning *`,
+    [stripeCustomerId, plan, stripeSubscriptionId ?? null]
+  );
+  return rows[0] || null;
 }
 
 module.exports = {
   getOrCreate,
   consume,
-  remaining,
+  getAccountUsage,
   linkCheckoutSession,
   setPlanByCustomerId,
-  freshFreeAccount,
 };

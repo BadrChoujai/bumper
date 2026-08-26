@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const { PORT } = require("./config");
 const store = require("./store");
@@ -44,12 +45,9 @@ app.get("/health", (req, res) => res.json({ ok: true }));
 app.post("/usage/check", async (req, res) => {
   const { deviceId } = req.body || {};
   if (!deviceId) return res.status(400).json({ error: "deviceId is required" });
-  const account = await store.getOrCreate(deviceId);
+  const usage = await store.getAccountUsage(deviceId);
   res.json({
-    plan: account.plan,
-    remaining: store.remaining(account),
-    limit: account.limit,
-    resetAt: account.resetAt,
+    ...usage,
     upgradeUrl: stripe.isConfigured() ? `/checkout?deviceId=${encodeURIComponent(deviceId)}` : null,
   });
 });

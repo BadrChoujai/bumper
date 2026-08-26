@@ -7,7 +7,7 @@ function isConfigured() {
 let stripeClient = null;
 function client() {
   if (!STRIPE_SECRET_KEY) return null;
-  if (!stripeClient) stripeClient = require("stripe")(STRIPE_SECRET_KEY);
+  if (!stripeClient) stripeClient = require("stripe")(STRIPE_SECRET_KEY, { apiVersion: "2025-03-31.basil" });
   return stripeClient;
 }
 

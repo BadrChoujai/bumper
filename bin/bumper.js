@@ -68,8 +68,10 @@ program
     try {
       const res = await fetch(`http://localhost:${opts.port}/account`);
       const account = await res.json();
-      if (account.unlimited) {
+      if (account.unlimited && account.plan === "free") {
         console.log("plan: free (unlimited — no quota server configured)");
+      } else if (account.unlimited) {
+        console.log(`plan: ${account.plan} (unlimited)`);
       } else if (account.plan === "unknown") {
         console.log("plan: couldn't reach the usage server, protection still runs unlimited for now");
       } else {
@@ -88,8 +90,10 @@ program
     try {
       const res = await fetch(`http://localhost:${opts.port}/account?fresh=1`);
       const account = await res.json();
-      if (account.unlimited) {
+      if (account.unlimited && account.plan === "free") {
         console.log("you're already unlimited — no quota server is configured for this install.");
+      } else if (account.unlimited) {
+        console.log(`you're already on the ${account.plan} plan — nothing to upgrade.`);
       } else if (account.upgradeUrl) {
         console.log(`open this link to upgrade: ${account.upgradeUrl}`);
       } else {

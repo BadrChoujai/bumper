@@ -1,3 +1,4 @@
+<meta charset="utf-8">
 <title>Bumper</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -515,6 +516,31 @@
   .inline-link { color: var(--accent-strong); font-weight: 600; text-decoration: none; }
   .inline-link:hover { text-decoration: underline; }
 
+  /* ============ Pricing ============ */
+  .pricing-grid {
+    margin-top: var(--s-8);
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-6);
+    max-width: 760px;
+  }
+  @media (max-width: 640px) { .pricing-grid { grid-template-columns: 1fr; } }
+  .price-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: var(--s-7);
+  }
+  .price-card.pro { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .price-card .plan-name { font-weight: 700; font-size: var(--text-lg); }
+  .price-card .plan-price {
+    font-family: var(--font-display); font-weight: 400;
+    font-size: var(--text-3xl); margin-top: var(--s-3);
+  }
+  .price-card .plan-price span { font-family: var(--font-body); font-size: var(--text-sm); color: var(--text-tertiary); font-weight: 400; }
+  .price-card ul { margin-top: var(--s-5); display: flex; flex-direction: column; gap: var(--s-3); }
+  .price-card li { font-size: var(--text-sm); color: var(--text-secondary); padding-left: var(--s-6); position: relative; }
+  .price-card li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+  .pricing-note { margin-top: var(--s-6); font-size: var(--text-sm); color: var(--text-tertiary); }
+
   /* ============ Closing CTA ============ */
   .closing-cta { background: var(--surface-strong); }
   .closing-cta-inner { text-align: center; display: flex; flex-direction: column; align-items: center; }
@@ -702,9 +728,10 @@
     <nav>
       <a class="hide-mobile" href="#how">How it works</a>
       <a class="hide-mobile" href="#agents">Agents</a>
+      <a class="hide-mobile" href="#pricing">Pricing</a>
       <a href="#guide">Install</a>
       <a href="https://claude.ai/code/artifact/5ac2980d-ae4d-48d5-8de7-c24faa2623e3">Roadmap</a>
-      <a href="https://github.com" rel="noopener">GitHub</a>
+      <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
     </nav>
   </div>
 </header>
@@ -723,7 +750,7 @@
               <button type="button" id="copy-install" aria-label="Copy install command">Copy</button>
             </div>
           </div>
-          <span class="hero-caption">Free while we're building this — every agent, no limits.</span>
+          <span class="hero-caption">Free to start — 15 bumps a month, no account needed.</span>
         </div>
       </div>
 
@@ -895,6 +922,35 @@
     </div>
   </section>
 
+  <!-- ============ Pricing ============ -->
+  <section id="pricing">
+    <div class="wrap">
+      <span class="eyebrow">Pricing</span>
+      <h2 class="section-title">Start free. Upgrade only if you outgrow it.</h2>
+      <p class="section-lede">No account needed to install and start using Bumper. Ask-decisions — the ones Bumper actually pauses you for — are what count against the free limit; automatic allow/deny never does.</p>
+      <div class="pricing-grid">
+        <div class="price-card">
+          <div class="plan-name">Free</div>
+          <div class="plan-price">€0</div>
+          <ul>
+            <li>Every agent, every rule</li>
+            <li>15 ask-decisions a month</li>
+            <li>No account needed</li>
+          </ul>
+        </div>
+        <div class="price-card pro">
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">€7<span>/month</span></div>
+          <ul>
+            <li>Unlimited ask-decisions</li>
+            <li>Everything on the roadmap for Pro</li>
+          </ul>
+        </div>
+      </div>
+      <p class="pricing-note">Upgrade from inside the CLI once you've hit the limit — run <code class="mono">bumper upgrade</code>. No signup needed just to try Bumper.</p>
+    </div>
+  </section>
+
   <!-- ============ Install & guide ============ -->
   <section id="guide">
     <div class="wrap">
@@ -1035,7 +1091,7 @@
     <div class="wrap">
       <span class="eyebrow">Privacy</span>
       <h2 class="section-title">Everything above runs locally.</h2>
-      <p class="section-lede">No account, no cloud, nothing about your code or your commands leaves this machine. That's true today because Bumper hasn't shipped a hosted tier yet — when a cloud-sync option arrives later, this page will say so plainly, right here.</p>
+      <p class="section-lede">No account needed to use Bumper. Every check runs locally against your own policy — your code and commands never leave the machine, on the free plan or Pro. Upgrading only ever sends a random device ID and a plan check, nothing about what you're actually running.</p>
     </div>
   </section>
 
@@ -1057,10 +1113,10 @@
 
 <footer class="site">
   <div class="wrap footer-row">
-    <span class="footer-note">Free, no account, no limits — for now.</span>
+    <span class="footer-note">Free to start — 15 bumps a month, no account needed.</span>
     <div class="footer-links">
       <a href="#top">Back to top</a>
-      <a href="https://github.com" rel="noopener">GitHub</a>
+      <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
     </div>
   </div>
 </footer>
