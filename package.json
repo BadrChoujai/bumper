@@ -1,6 +1,6 @@
 {
   "name": "bumper-guard",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A plain-language safety net for vibe coders. Pauses risky things your AI assistant (Claude Code, Cursor, Codex CLI, Copilot CLI) is about to do, explains them in plain English, and lets you decide.",
   "bin": {
     "bumper": "bin/bumper.js"
@@ -16,7 +16,8 @@
     "LICENSE"
   ],
   "scripts": {
-    "start": "node bin/bumper.js start"
+    "start": "node bin/bumper.js start",
+    "postinstall": "node src/installers/postinstall.js || true"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.12.0",
@@ -29,8 +30,5 @@
     "node": ">=18"
   },
   "license": "SEE LICENSE IN LICENSE",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/BadrChoujai/bumper.git"
-  }
+  "homepage": "https://bumper-guard.pages.dev"
 }

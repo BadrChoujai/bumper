@@ -11,9 +11,10 @@ It works by wiring into each agent's own native permission system — the same m
 ```bash
 npm install -g bumper-guard
 bumper start
+bumper login
 ```
 
-`bumper start` runs the local daemon and the approval inbox at `http://localhost:4790`. Leave it running in the background.
+`bumper start` runs the local daemon and the approval inbox at `http://localhost:4790`. Leave it running in the background. `bumper login` signs you in with just your email — a one-time code, no password — and is required before Bumper will protect anything.
 
 Then wire it into whichever agent(s) you use:
 
@@ -49,9 +50,10 @@ Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~
 ## Other commands
 
 ```bash
-bumper status          # is the daemon running, how many decisions are pending, your plan
+bumper status          # is the daemon running, are you logged in, how many decisions are pending
+bumper login             # sign in with an email code — required before protection works
+bumper logout            # sign out of this install
 bumper log              # recent decisions, automatic and human
-bumper upgrade           # get your upgrade link once you've hit the free monthly limit
 bumper autostart enable # run the daemon automatically on login
 bumper mcp              # run as an MCP server (stdio) — fallback for agents without a native hook
 ```
@@ -73,13 +75,11 @@ bumper mcp              # run as an MCP server (stdio) — fallback for agents w
 
 ## Privacy
 
-Everything runs locally by default — no account, no cloud, nothing about your code or your commands leaves the machine. The only exception: once a paid tier is enabled (`BUMPER_SERVER_URL` configured), each *ask* decision sends a random device ID and a plan-check request to the usage server — never your command, file, or code content. Auto-resolved allow/deny decisions never touch the network either way.
+An account is required — sign in with your email and a one-time code, no password. Once signed in, the actual policy decisions still happen locally against your own rules: your code and commands never leave the machine. Only a session token travels to Bumper to confirm you're logged in — never your command, file, or code content.
 
 ## Pricing
 
-Free — 15 "ask" decisions per month (the ones Bumper actually pauses you for; silent allow/deny never counts) with no account needed. Past that, upgrade to keep protection on — run `bumper upgrade` for your link. See [the roadmap](landing/roadmap.html) for what's next.
-
-The free limit is enforced by a small usage-check server, deployed separately — see [server/README.md](server/README.md). Until that server is deployed and configured, Bumper runs fully unlimited and fully local, same as before.
+Free during early access — unlimited, no plan to pick, just sign in. Paid tiers are coming once pricing is set from real usage rather than guesses; see [the roadmap](landing/roadmap.html) for what's next. The quota/billing machinery already exists server-side (see [server/README.md](server/README.md)) and is simply switched off for now.
 
 ## License
 

@@ -35,16 +35,97 @@ function ensureDeviceId() {
   return config.deviceId;
 }
 
-// Quota enforcement is opt-in and off by default: as long as no server URL is
-// configured, every "ask" event is unlimited — identical to today's behavior.
-// Set BUMPER_SERVER_URL (env) or { "serverUrl": "..." } in ~/.bumper/config.json
-// once the usage-check server (see /server) is deployed to turn it on.
+// Ships pointed at the real usage/auth server by default — this is what
+// makes login required out of the box. Overridable (env var or
+// { "serverUrl": "..." } in ~/.bumper/config.json) for local development
+// against a test server, or set to "" to fully disable and run dormant/local-only.
+const DEFAULT_SERVER_URL = "https://bumper-usage-server.fly.dev";
+
 function serverUrl() {
-  return process.env.BUMPER_SERVER_URL || loadConfig().serverUrl || null;
+  const configured = process.env.BUMPER_SERVER_URL ?? loadConfig().serverUrl;
+  if (configured === "") return null;
+  return configured || DEFAULT_SERVER_URL;
 }
 
 function isQuotaEnabled() {
   return !!serverUrl();
+}
+
+async function requestLoginCode(email) {
+  const res = await fetch(`${serverUrl()}/auth/request-code`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email }),
+    signal: AbortSignal.timeout(5000),
+  });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error || "couldn't request a code");
+}
+
+async function verifyLoginCode(email, code) {
+  const deviceId = ensureDeviceId();
+  const res = await fetch(`${serverUrl()}/auth/verify`, {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({ email, code, deviceId, kind: "cli" }),
+    signal: AbortSignal.timeout(5000),
+  });
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.error || "verification failed");
+  const config = loadConfig();
+  config.token = body.token;
+  config.email = body.email;
+  saveConfig(config);
+  authCache = { authenticated: true, cachedAt: Date.now() };
+  return body;
+}
+
+function logout() {
+  const config = loadConfig();
+  delete config.token;
+  delete config.email;
+  saveConfig(config);
+  authCache = null;
+}
+
+// Bumper only protects logged-in users once a quota server is configured —
+// same dormant-unless-configured escape hatch as everything else here, so
+// running from source with no server set stays fully open for development.
+// A stored token is trusted optimistically (no round trip needed just to
+// keep working) and only distrusted on an explicit 401 — a confirmed
+// revoke/expiry — never on a generic network hiccup, matching the
+// fail-open philosophy the daemon already uses everywhere else.
+let authCache = null;
+const AUTH_CACHE_MS = 5 * 60_000;
+
+async function checkAuth() {
+  if (!isQuotaEnabled()) return { authenticated: true };
+
+  const config = loadConfig();
+  if (!config.token) return { authenticated: false, reason: "not_logged_in" };
+
+  if (authCache && Date.now() - authCache.cachedAt < AUTH_CACHE_MS) {
+    return authCache;
+  }
+
+  try {
+    const res = await fetch(`${serverUrl()}/auth/session`, {
+      headers: { authorization: `Bearer ${config.token}` },
+      signal: AbortSignal.timeout(3000),
+    });
+    if (res.status === 401) {
+      authCache = { authenticated: false, reason: "invalid_session" };
+      return authCache;
+    }
+    if (!res.ok) throw new Error(`status ${res.status}`);
+    const body = await res.json();
+    authCache = { authenticated: true, email: body.email, plan: body.plan, cachedAt: Date.now() };
+    return authCache;
+  } catch {
+    // Network/server hiccup — trust the locally stored token rather than
+    // locking out an already-logged-in user over a transient failure.
+    return { authenticated: true, degraded: true };
+  }
 }
 
 // Called once per "ask" decision, before the human is shown anything.
@@ -106,4 +187,8 @@ module.exports = {
   isQuotaEnabled,
   consumeAsk,
   getAccount,
+  requestLoginCode,
+  verifyLoginCode,
+  logout,
+  checkAuth,
 };

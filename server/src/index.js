@@ -3,6 +3,7 @@ const express = require("express");
 const { PORT } = require("./config");
 const store = require("./store");
 const stripe = require("./stripe");
+const auth = require("./auth");
 
 const app = express();
 
@@ -41,6 +42,35 @@ app.post("/webhook/stripe", express.raw({ type: "application/json" }), async (re
 app.use(express.json());
 
 app.get("/health", (req, res) => res.json({ ok: true }));
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+app.post("/auth/request-code", async (req, res) => {
+  const email = String(req.body?.email || "").trim().toLowerCase();
+  if (!EMAIL_RE.test(email)) return res.status(400).json({ error: "a valid email is required" });
+  const result = await auth.requestCode(email);
+  if (!result.ok) return res.status(429).json({ error: result.reason });
+  res.json({ ok: true });
+});
+
+app.post("/auth/verify", async (req, res) => {
+  const email = String(req.body?.email || "").trim().toLowerCase();
+  const code = String(req.body?.code || "").trim();
+  const deviceIdHint = req.body?.deviceId || null;
+  const kind = req.body?.kind === "web" ? "web" : "cli";
+  if (!EMAIL_RE.test(email) || !code) return res.status(400).json({ error: "email and code are required" });
+
+  const result = await auth.verifyCode(email, code, { deviceIdHint, kind });
+  if (!result.ok) return res.status(401).json({ error: result.reason });
+  res.json({ token: result.token, email: result.account.email, plan: result.account.plan });
+});
+
+app.get("/auth/session", async (req, res) => {
+  const token = (req.headers.authorization || "").replace(/^Bearer\s+/i, "");
+  const account = await auth.checkSession(token);
+  if (!account) return res.status(401).json({ error: "not logged in" });
+  res.json({ email: account.email, plan: account.plan });
+});
 
 app.post("/usage/check", async (req, res) => {
   const { deviceId } = req.body || {};

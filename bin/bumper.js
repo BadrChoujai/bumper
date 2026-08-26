@@ -1,9 +1,15 @@
 #!/usr/bin/env node
 const { Command } = require("commander");
 const path = require("path");
+const readline = require("readline");
+
+function prompt(question) {
+  const rl = readline.createInterface({ input: process.stdin, output: process.stdout });
+  return new Promise((resolve) => rl.question(question, (answer) => { rl.close(); resolve(answer.trim()); }));
+}
 
 const program = new Command();
-program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.1.0");
+program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.1.1");
 
 program
   .command("start")
@@ -66,6 +72,15 @@ program
       return;
     }
     try {
+      const res = await fetch(`http://localhost:${opts.port}/auth`);
+      const auth = await res.json();
+      if (auth.quotaEnabled) {
+        console.log(auth.authenticated ? `logged in as ${auth.email}` : "not logged in — run `bumper login`");
+      }
+    } catch {
+      // auth status is a nice-to-have, don't fail the whole command over it
+    }
+    try {
       const res = await fetch(`http://localhost:${opts.port}/account`);
       const account = await res.json();
       if (account.unlimited && account.plan === "free") {
@@ -80,6 +95,43 @@ program
     } catch {
       // account status is a nice-to-have, don't fail the whole command over it
     }
+  });
+
+program
+  .command("login [email]")
+  .description("log in (or sign up) with an email code — required before bumper will protect anything")
+  .action(async (email) => {
+    const account = require("../src/account");
+    if (!account.isQuotaEnabled()) {
+      console.log("no quota/auth server is configured for this install — nothing to log into.");
+      return;
+    }
+    if (!email) email = await prompt("Email: ");
+    try {
+      await account.requestLoginCode(email);
+    } catch (err) {
+      console.error(`couldn't send a code: ${err.message}`);
+      process.exitCode = 1;
+      return;
+    }
+    console.log(`code sent to ${email} — check your inbox.`);
+    const code = await prompt("Code: ");
+    try {
+      const result = await account.verifyLoginCode(email, code);
+      console.log(`logged in as ${result.email}.`);
+    } catch (err) {
+      console.error(`login failed: ${err.message}`);
+      process.exitCode = 1;
+    }
+  });
+
+program
+  .command("logout")
+  .description("log out of this install")
+  .action(() => {
+    const account = require("../src/account");
+    account.logout();
+    console.log("logged out.");
   });
 
 program

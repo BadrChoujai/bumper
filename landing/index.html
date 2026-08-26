@@ -520,10 +520,9 @@
   /* ============ Pricing ============ */
   .pricing-grid {
     margin-top: var(--s-8);
-    display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-6);
-    max-width: 760px;
+    display: grid; grid-template-columns: 1fr;
+    max-width: 340px;
   }
-  @media (max-width: 640px) { .pricing-grid { grid-template-columns: 1fr; } }
   .price-card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -731,7 +730,6 @@
       <a class="hide-mobile" href="#agents">Agents</a>
       <a class="hide-mobile" href="#pricing">Pricing</a>
       <a href="#guide">Install</a>
-      <a href="/roadmap">Roadmap</a>
       <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
     </nav>
   </div>
@@ -751,7 +749,7 @@
               <button type="button" id="copy-install" aria-label="Copy install command">Copy</button>
             </div>
           </div>
-          <span class="hero-caption">Free to start — 15 bumps a month, no account needed.</span>
+          <span class="hero-caption">Free during early access — sign in with just your email, no password.</span>
         </div>
       </div>
 
@@ -917,7 +915,7 @@
             <span class="status-pill limited">Partial support</span>
           </div>
           <div class="proof-line"><span class="prompt">$</span> rm -rf * <span class="arrow">→</span> <span class="asks">Codex's own prompt asks</span></div>
-          <p>Codex CLI has no live hook to plug into yet, so Bumper can't add its plain-English layer here — but it still turns on Codex's built-in approval prompt. <a class="inline-link" href="/roadmap#agent-support">Details on the roadmap →</a></p>
+          <p>Codex CLI has no live hook to plug into yet, so Bumper can't add its plain-English layer here — but it still turns on Codex's built-in approval prompt.</p>
         </div>
       </div>
     </div>
@@ -927,24 +925,16 @@
   <section id="pricing">
     <div class="wrap">
       <span class="eyebrow">Pricing</span>
-      <h2 class="section-title">Start free. Upgrade only if you outgrow it.</h2>
-      <p class="section-lede">No account needed to install and start using Bumper. Ask-decisions — the ones Bumper actually pauses you for — are what count against the free limit; automatic allow/deny never does.</p>
+      <h2 class="section-title">Free during early access.</h2>
+      <p class="section-lede">Sign in with just your email — a code, no password — and everything's unlimited while this is early. Paid tiers are coming once pricing is set from real usage, not guesses; early sign-ups won't be surprised by it.</p>
       <div class="pricing-grid">
-        <div class="price-card">
-          <div class="plan-name">Free</div>
-          <div class="plan-price">€0</div>
+        <div class="price-card pro">
+          <div class="plan-name">Early access</div>
+          <div class="plan-price">$0</div>
           <ul>
             <li>Every agent, every rule</li>
-            <li>15 ask-decisions a month</li>
-            <li>No account needed</li>
-          </ul>
-        </div>
-        <div class="price-card pro">
-          <div class="plan-name">Pro</div>
-          <div class="plan-price">€7<span>/month</span></div>
-          <ul>
             <li>Unlimited ask-decisions</li>
-            <li>Everything on the roadmap for Pro</li>
+            <li>Sign in with email — no password</li>
           </ul>
         </div>
       </div>
@@ -1092,7 +1082,7 @@
     <div class="wrap">
       <span class="eyebrow">Privacy</span>
       <h2 class="section-title">Your code and commands never leave your machine.</h2>
-      <p class="section-lede">No account needed to use Bumper. Every check runs locally against your own policy — your code and commands never leave the machine, on the free plan or Pro. Upgrading only ever sends a random device ID and a plan check, nothing about what you're actually running.</p>
+      <p class="section-lede">An account is required — sign in with your email and a one-time code, no password to remember or leak. Once signed in, every check still runs locally against your own policy: your code and commands never leave the machine. Only a session token travels to Bumper to confirm you're logged in — never what you're actually running.</p>
     </div>
   </section>
 
@@ -1106,7 +1096,6 @@
           <code id="install-cmd-text-2">npm install -g bumper-guard</code>
           <button type="button" id="copy-install-2" aria-label="Copy install command">Copy</button>
         </div>
-        <a class="btn btn-ghost" href="/roadmap">See what's next</a>
       </div>
     </div>
   </section>
@@ -1114,7 +1103,7 @@
 
 <footer class="site">
   <div class="wrap footer-row">
-    <span class="footer-note">Free to start — 15 bumps a month, no account needed.</span>
+    <span class="footer-note">Free during early access — sign in with your email, no password.</span>
     <div class="footer-links">
       <a href="#top">Back to top</a>
       <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>

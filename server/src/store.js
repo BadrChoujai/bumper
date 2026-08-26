@@ -1,5 +1,5 @@
 const db = require("./db");
-const { FREE_ASKS_PER_MONTH } = require("./config");
+const { FREE_ASKS_PER_MONTH, ENFORCE_QUOTA } = require("./config");
 
 function startOfMonth(from = new Date()) {
   return new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), 1)).toISOString().slice(0, 10);
@@ -47,7 +47,7 @@ function unlimitedSnapshot(plan) {
 async function consume(deviceId) {
   const account = await getOrCreate(deviceId);
 
-  if (account.plan !== "free") {
+  if (!ENFORCE_QUOTA || account.plan !== "free") {
     return { allowed: true, ...unlimitedSnapshot(account.plan) };
   }
 
@@ -79,7 +79,7 @@ async function consume(deviceId) {
 
 async function getAccountUsage(deviceId) {
   const account = await getOrCreate(deviceId);
-  if (account.plan !== "free") return unlimitedSnapshot(account.plan);
+  if (!ENFORCE_QUOTA || account.plan !== "free") return unlimitedSnapshot(account.plan);
   const snapshot = await getUsageSnapshot(account.id);
   return { plan: account.plan, ...snapshot };
 }

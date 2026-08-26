@@ -1,29 +1,32 @@
 # bumper-usage-server
 
-Small API that tracks the free-tier monthly quota and Pro-tier billing for Bumper. Deployed and versioned separately from the `bumper-guard` npm package — this never ships to users, only the daemon in `../src` talks to it.
-
-Until this is deployed and a Bumper install points at it (`BUMPER_SERVER_URL`), every install runs fully unlimited and fully local — this being offline changes nothing for existing users.
+API behind Bumper's login and usage tracking. Deployed and versioned separately from the `bumper-guard` npm package — this never ships to users, only the daemon in `../src` talks to it. The published CLI points at this server by default now (`src/account.js`'s `DEFAULT_SERVER_URL`) — Bumper requires being logged in to protect anything; it's no longer an opt-in add-on.
 
 ## Data model
 
-Two tables (`migrations/001_init.sql`):
+Four tables (`migrations/`):
 
-- **`accounts`** — one row per device/user: `device_id`, `email`, `plan` (`free`/`pro`), Stripe customer/subscription IDs.
-- **`usage_periods`** — one row per account per calendar month: `asks_used` / `asks_limit`. Kept separate from `accounts` so each month is a permanent row instead of a counter that gets overwritten — gives you real history for the "set the free limit from actual usage" step later, and makes the check-and-increment on `/usage/consume` a single atomic SQL statement (`INSERT ... ON CONFLICT ... WHERE asks_used < asks_limit`) — race-safe under concurrent requests with no separate locking needed.
+- **`accounts`** — one row per user: `device_id` (the device that first created the row — historical, not the identity once an email is attached), `email`, `plan` (`free`/`pro`), Stripe customer/subscription IDs.
+- **`usage_periods`** — one row per account per calendar month: `asks_used` / `asks_limit`. Kept separate from `accounts` so each month is a permanent row instead of a counter that gets overwritten, and makes the check-and-increment on `/usage/consume` a single atomic SQL statement (`INSERT ... ON CONFLICT ... WHERE asks_used < asks_limit`) — race-safe under concurrent requests, no separate locking needed. Currently not enforced — see `ENFORCE_QUOTA` below.
+- **`verification_codes`** — email + 6-digit code + 10-minute expiry, for the login flow. No passwords anywhere.
+- **`sessions`** — one row per login (CLI or web), each with its own token — a device or browser can be revoked on its own without touching the others.
 
-Nothing else is stored server-side — no command text, file paths, or code content ever reach this database. See `src/db.js` / `src/store.js`.
+Nothing else is stored server-side — no command text, file paths, or code content ever reach this database. See `src/db.js` / `src/store.js` / `src/auth.js`.
 
 ## Endpoints
 
+- `POST /auth/request-code { email }` — sends a 6-digit code via Resend (or logs it to the console if `RESEND_API_KEY` isn't set — that's how local dev works with zero email setup). Rate-limited to one request per email per 30s.
+- `POST /auth/verify { email, code, deviceId?, kind? }` — verifies the code, creates the account if it's the first time this email has logged in (or attaches the email to an existing anonymous `deviceId` account, carrying over its usage), returns a session token.
+- `GET /auth/session` — `Authorization: Bearer <token>`, used by the daemon to gate every `/check`.
 - `POST /usage/check { deviceId }` — read-only, current plan + remaining bumps. Doesn't consume one.
-- `POST /usage/consume { deviceId }` — called once per "ask" decision. Decrements the free counter, or returns `{ allowed: false }` once it's at zero.
+- `POST /usage/consume { deviceId }` — called once per "ask" decision. Decrements the free counter, or returns `{ allowed: false }` once it's at zero — only when `ENFORCE_QUOTA=true`.
 - `GET /checkout?deviceId=...&email=...` — redirects into a Stripe Checkout session for the Pro subscription.
 - `POST /webhook/stripe` — Stripe calls this on `checkout.session.completed` / `customer.subscription.deleted` to flip an account between `free` and `pro`.
 - `GET /health`
 
-Free-tier counters reset automatically at the start of each calendar month — computed on read, no cron job needed.
+Free-tier counters reset automatically at the start of each calendar month — computed on read, no cron job needed. Set `ENFORCE_QUOTA=true` to actually enforce it — off by default right now, so every logged-in account is unlimited during early access.
 
-## Run locally (Postgres needed, no accounts needed)
+## Run locally (Postgres needed)
 
 Point `DATABASE_URL` at any Postgres — a throwaway local one works fine for development:
 
@@ -52,6 +55,7 @@ BUMPER_SERVER_URL=http://localhost:8787 bumper start
    - Copy your secret key (`sk_test_...` while testing, `sk_live_...` once real) into `STRIPE_SECRET_KEY`.
    - Add a webhook endpoint in the Stripe dashboard pointing at `https://<your-host>/webhook/stripe`, listening for `checkout.session.completed` and `customer.subscription.deleted` → copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
 4. Set `CHECKOUT_SUCCESS_URL` / `CHECKOUT_CANCEL_URL` to real pages once you have a landing site.
-5. Once deployed, point installs at it: `BUMPER_SERVER_URL=https://<your-host>` (env var, or `"serverUrl"` in `~/.bumper/config.json`) — or bake it as the CLI's default once you're ready for it to apply to everyone.
+5. **Resend** (free, no card) for the actual login codes — an API key alone only sends to your own verified address via the sandbox sender; a verified domain is needed before other people's emails will receive anything.
+6. The CLI already points at the production host by default (`src/account.js`) — nothing else to wire up once this is deployed.
 
 See `.env.example` for the full list of env vars.

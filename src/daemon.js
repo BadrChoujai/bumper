@@ -5,7 +5,7 @@ const os = require("os");
 const crypto = require("crypto");
 const { loadPolicy, evaluate, policyPathFor } = require("./policy");
 const { explain } = require("./explain");
-const { consumeAsk, getAccount } = require("./account");
+const { consumeAsk, getAccount, checkAuth, isQuotaEnabled, loadConfig } = require("./account");
 
 const BUMPER_HOME = path.join(os.homedir(), ".bumper");
 const AUDIT_LOG = path.join(BUMPER_HOME, "audit.jsonl");
@@ -28,6 +28,23 @@ function createDaemon() {
 
   app.post("/check", async (req, res) => {
     const request = req.body || {};
+
+    const auth = await checkAuth();
+    if (!auth.authenticated) {
+      const reason =
+        "Bumper needs you logged in to protect this project — run `bumper login` in a terminal, then try again.";
+      const entry = {
+        id: crypto.randomUUID(),
+        ts: new Date().toISOString(),
+        request,
+        decision: "deny",
+        reason,
+        source: "auth",
+      };
+      appendAudit(entry);
+      return res.json({ decision: "deny", reason, loginRequired: true });
+    }
+
     const cwd = request.cwd || process.cwd();
     const policy = loadPolicy(policyPathFor(cwd));
     const result = evaluate(policy, request);
@@ -136,6 +153,11 @@ function createDaemon() {
   app.get("/account", async (req, res) => {
     const account = await getAccount({ fresh: req.query.fresh === "1" });
     res.json(account);
+  });
+
+  app.get("/auth", async (req, res) => {
+    const auth = await checkAuth();
+    res.json({ ...auth, quotaEnabled: isQuotaEnabled(), email: auth.email || loadConfig().email || null });
   });
 
   return app;
