@@ -7,6 +7,14 @@
   },
   "main": "src/daemon.js",
   "type": "commonjs",
+  "files": [
+    "bin",
+    "src",
+    "web",
+    "bumper.policy.example.yaml",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "start": "node bin/bumper.js start"
   },
@@ -20,5 +28,9 @@
   "engines": {
     "node": ">=18"
   },
-  "license": "MIT"
+  "license": "SEE LICENSE IN LICENSE",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BadrChoujai/bumper.git"
+  }
 }

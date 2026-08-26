@@ -1,0 +1,27 @@
+Copyright (c) 2026 Badr Choujai. All rights reserved.
+
+This source code is made publicly available for review, evaluation, and
+personal, non-commercial use only.
+
+You MAY:
+  - read, study, and evaluate this source code
+  - install and run the published "bumper-guard" package for your own use
+  - fork the repository privately for the purpose of proposing changes back
+    to the original project (e.g. a pull request)
+
+You MAY NOT, without prior written permission from the copyright holder:
+  - redistribute, sell, sublicense, or rent this software or any derivative
+    of it, in source or compiled form
+  - publish a competing package built from this source code, under this
+    name or any other
+  - remove or alter this notice from any copy of the software
+  - use this software, or any derivative of it, as part of a commercial
+    product or service other than the official "bumper-guard" package
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHOR BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+For permissions beyond this license, contact: choujai.badr@gmail.com

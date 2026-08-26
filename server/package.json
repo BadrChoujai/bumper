@@ -1,0 +1,20 @@
+{
+  "name": "bumper-usage-server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Usage-check + billing API for Bumper's Pro tier. Deployed separately from the bumper-guard CLI package.",
+  "main": "src/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "stripe": "^17.4.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "SEE LICENSE IN ../LICENSE"
+}

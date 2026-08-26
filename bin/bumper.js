@@ -63,6 +63,40 @@ program
       console.log(`bumper is running — ${body.pending} pending decision(s)`);
     } catch {
       console.log("bumper isn't running. Start it with: bumper start");
+      return;
+    }
+    try {
+      const res = await fetch(`http://localhost:${opts.port}/account`);
+      const account = await res.json();
+      if (account.unlimited) {
+        console.log("plan: free (unlimited — no quota server configured)");
+      } else if (account.plan === "unknown") {
+        console.log("plan: couldn't reach the usage server, protection still runs unlimited for now");
+      } else {
+        console.log(`plan: ${account.plan} — ${account.remaining ?? "?"} bump(s) left this month`);
+      }
+    } catch {
+      // account status is a nice-to-have, don't fail the whole command over it
+    }
+  });
+
+program
+  .command("upgrade")
+  .description("get your upgrade link (removes the free monthly bump limit)")
+  .option("-p, --port <port>", "port to check", "4790")
+  .action(async (opts) => {
+    try {
+      const res = await fetch(`http://localhost:${opts.port}/account?fresh=1`);
+      const account = await res.json();
+      if (account.unlimited) {
+        console.log("you're already unlimited — no quota server is configured for this install.");
+      } else if (account.upgradeUrl) {
+        console.log(`open this link to upgrade: ${account.upgradeUrl}`);
+      } else {
+        console.log("couldn't get an upgrade link right now — try again in a moment.");
+      }
+    } catch {
+      console.log("bumper isn't running. Start it with: bumper start");
     }
   });
 

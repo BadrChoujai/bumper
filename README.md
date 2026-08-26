@@ -49,8 +49,9 @@ Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~
 ## Other commands
 
 ```bash
-bumper status          # is the daemon running, how many decisions are pending
+bumper status          # is the daemon running, how many decisions are pending, your plan
 bumper log              # recent decisions, automatic and human
+bumper upgrade           # get your upgrade link once you've hit the free monthly limit
 bumper autostart enable # run the daemon automatically on login
 bumper mcp              # run as an MCP server (stdio) — fallback for agents without a native hook
 ```
@@ -72,12 +73,14 @@ bumper mcp              # run as an MCP server (stdio) — fallback for agents w
 
 ## Privacy
 
-Everything runs locally. No account, no cloud, nothing about your code or your commands leaves the machine.
+Everything runs locally by default — no account, no cloud, nothing about your code or your commands leaves the machine. The only exception: once a paid tier is enabled (`BUMPER_SERVER_URL` configured), each *ask* decision sends a random device ID and a plan-check request to the usage server — never your command, file, or code content. Auto-resolved allow/deny decisions never touch the network either way.
 
 ## Pricing
 
-Free, no limits, while this is being built. See [the roadmap](landing/roadmap.html) for what's planned once it isn't.
+Free — 15 "ask" decisions per month (the ones Bumper actually pauses you for; silent allow/deny never counts) with no account needed. Past that, upgrade to keep protection on — run `bumper upgrade` for your link. See [the roadmap](landing/roadmap.html) for what's next.
+
+The free limit is enforced by a small usage-check server, deployed separately — see [server/README.md](server/README.md). Until that server is deployed and configured, Bumper runs fully unlimited and fully local, same as before.
 
 ## License
 
-MIT
+All rights reserved — see [LICENSE](LICENSE). Source is public for review; copying, redistribution, or reselling isn't.

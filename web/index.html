@@ -30,6 +30,13 @@
   header .mark { font-size: 34px; }
   header h1 { font-size: 22px; margin: 8px 0 2px; }
   header p { color: var(--muted); margin: 0; font-size: 14px; }
+  .quota {
+    margin-top: 10px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .quota a { color: var(--deny); font-weight: 600; text-decoration: none; }
+  .quota a:hover { text-decoration: underline; }
 
   .empty {
     text-align: center;
@@ -99,6 +106,7 @@
       <div class="mark">🟢</div>
       <h1>Bumper</h1>
       <p>watching what your AI assistant is about to do</p>
+      <div class="quota" id="quota"></div>
     </header>
     <div id="list"></div>
   </div>
@@ -144,6 +152,23 @@ function cardHtml(item) {
   `;
 }
 
+async function renderQuota() {
+  const el = document.getElementById("quota");
+  try {
+    const res = await fetch("/account");
+    const account = await res.json();
+    if (account.unlimited || account.plan === "unknown") {
+      el.textContent = "";
+    } else if (typeof account.remaining === "number") {
+      el.innerHTML = account.remaining <= 0
+        ? `0 free bumps left this month — <a href="${account.upgradeUrl || "#"}" target="_blank" rel="noopener">upgrade</a> to keep protection on`
+        : `${account.remaining} free bump(s) left this month`;
+    }
+  } catch {
+    el.textContent = "";
+  }
+}
+
 async function render() {
   const items = await fetchPending();
   const list = document.getElementById("list");
@@ -155,7 +180,9 @@ async function render() {
 }
 
 render();
+renderQuota();
 setInterval(render, 1500);
+setInterval(renderQuota, 15000);
 </script>
 </body>
 </html>

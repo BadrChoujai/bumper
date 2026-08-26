@@ -5,6 +5,7 @@ const os = require("os");
 const crypto = require("crypto");
 const { loadPolicy, evaluate, policyPathFor } = require("./policy");
 const { explain } = require("./explain");
+const { consumeAsk, getAccount } = require("./account");
 
 const BUMPER_HOME = path.join(os.homedir(), ".bumper");
 const AUDIT_LOG = path.join(BUMPER_HOME, "audit.jsonl");
@@ -25,7 +26,7 @@ function createDaemon() {
 
   const pending = new Map(); // id -> { request, resolve, createdAt, plainText }
 
-  app.post("/check", (req, res) => {
+  app.post("/check", async (req, res) => {
     const request = req.body || {};
     const cwd = request.cwd || process.cwd();
     const policy = loadPolicy(policyPathFor(cwd));
@@ -43,6 +44,23 @@ function createDaemon() {
       };
       appendAudit(entry);
       return res.json({ decision: result.decision, reason: plainText });
+    }
+
+    // "ask" is the only decision that counts against the free-plan quota —
+    // allow/deny above resolve silently and never touch the usage server.
+    const quota = await consumeAsk();
+    if (!quota.allowed) {
+      const reason = `You've used all ${quota.limit || 15} free bumps this month. Upgrade to keep Bumper watching for risky actions.`;
+      const entry = {
+        id: crypto.randomUUID(),
+        ts: new Date().toISOString(),
+        request,
+        decision: "deny",
+        reason,
+        source: "quota",
+      };
+      appendAudit(entry);
+      return res.json({ decision: "deny", reason, upgradeUrl: quota.upgradeUrl });
     }
 
     // "ask" -> hold for a human decision, with a timeout fallback
@@ -114,6 +132,11 @@ function createDaemon() {
   });
 
   app.get("/health", (req, res) => res.json({ ok: true, pending: pending.size }));
+
+  app.get("/account", async (req, res) => {
+    const account = await getAccount({ fresh: req.query.fresh === "1" });
+    res.json(account);
+  });
 
   return app;
 }
