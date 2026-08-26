@@ -96,8 +96,12 @@
   h1, h2, h3, p { margin: 0; }
   ul { margin: 0; padding: 0; list-style: none; }
   code, .mono { font-family: var(--font-mono); }
+  html { scroll-behavior: smooth; }
   :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
-  @media (prefers-reduced-motion: reduce) { * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
+  }
 
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--s-7); }
   @media (max-width: 640px) { .wrap { padding: 0 var(--s-5); } }

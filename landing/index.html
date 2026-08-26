@@ -111,7 +111,7 @@
 
   /* ============ Reset-ish ============ */
   * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
   body {
     margin: 0;
     background: var(--ground);
@@ -135,6 +135,7 @@
 
   @media (prefers-reduced-motion: reduce) {
     * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+    html { scroll-behavior: auto; }
   }
 
   .wrap {
@@ -1090,7 +1091,7 @@
   <section id="privacy">
     <div class="wrap">
       <span class="eyebrow">Privacy</span>
-      <h2 class="section-title">Everything above runs locally.</h2>
+      <h2 class="section-title">Your code and commands never leave your machine.</h2>
       <p class="section-lede">No account needed to use Bumper. Every check runs locally against your own policy — your code and commands never leave the machine, on the free plan or Pro. Upgrading only ever sends a random device ID and a plan check, nothing about what you're actually running.</p>
     </div>
   </section>
