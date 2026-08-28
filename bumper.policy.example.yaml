@@ -1,6 +1,9 @@
 # Copy this to bumper.policy.yaml in your project (or ~/.bumper/policy.yaml
-# for every project) to customize what Bumper checks. If no policy file
-# exists, Bumper uses its built-in default rules automatically.
+# for every project) to add your own rules. If no policy file exists, Bumper
+# uses its built-in default rules automatically. Rules you add here are
+# checked first (so one can override a built-in rule by matching before it,
+# or by reusing its id) but the 50+ built-in danger-pack rules stay active
+# underneath either way -- this file only ever adds to that, never replaces it.
 
 default: allow         # allow | deny | ask  — what happens when nothing below matches
 timeout_seconds: 90    # how long to wait for you before falling back

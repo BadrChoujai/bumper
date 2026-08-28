@@ -29,16 +29,20 @@ Or install into all four at once with `bumper install all`. Add `--global` to an
 
 ## What it actually checks
 
-A default "danger pack" ships out of the box:
+A default "danger pack" ships out of the box — 50+ rules, covering every category of irreversible action a coding agent realistically runs into, not just a handful of examples. Full source: [src/policy.js](src/policy.js).
 
-| Pattern | Decision |
-|---|---|
-| `rm -rf *` (or similarly broad deletes) | Blocked automatically |
-| `git push --force` | Asks first |
-| `curl ... \| sh` | Asks first |
-| `npm publish` | Asks first |
-| `DROP TABLE ...` / `DELETE FROM ... WHERE 1=1` | Asks first |
-| A live secret key (Stripe, AWS, Supabase service-role) written into code | Asks first |
+| Category | Examples | Decision |
+|---|---|---|
+| Truly no-undo filesystem wipes | `rm -rf *`, raw disk writes (`dd ... of=/dev/...`), formatting a drive (`mkfs`, `Format-Volume`), a fork bomb | **Blocked automatically** |
+| Other irreversible deletes | `rm -r`, `git clean -f`, `find -delete`, `shred`, PowerShell `Remove-Item -Recurse`, Windows `rd`/`del /f` | Asks first |
+| Git history/working-tree loss | `git push --force`, `git reset --hard`, `git branch -D`, `git checkout --`/`git restore`, `git push --delete`, `git filter-branch` | Asks first |
+| Databases | `DROP TABLE`/`DROP DATABASE`, `TRUNCATE`, `DELETE ... WHERE 1=1`, MongoDB `dropDatabase()`, Redis `FLUSHALL`/`FLUSHDB` | Asks first |
+| Cloud infrastructure | `terraform destroy`/`-auto-approve`, `aws s3 rm --recursive`/`rb`, `kubectl delete namespace`/`--all`, `docker system prune`/`volume prune` | Asks first |
+| Blind script execution | `curl ... \| sh` | Asks first |
+| Public releases, hard to fully undo | `npm publish`, `npm unpublish`, `gh release delete` | Asks first |
+| Live secrets landing in code | Stripe, AWS, GitHub, Google, Slack keys, private key blocks, or a write to `.env`/`.env.local`/`.env.production` | Asks first |
+
+Copy `bumper.policy.example.yaml` to add your own rules on top of this — it doesn't replace the built-in pack, only extends it.
 
 Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~/.bumper/policy.yaml` for every project) to add your own rules. See the file for the format — `match` on `command` (glob), `file` (glob), or `content_pattern` (regex against code being written), a `decision` of `allow`/`deny`/`ask`, and an `explain` string in plain English.
 
