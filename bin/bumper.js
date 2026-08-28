@@ -9,7 +9,7 @@ function prompt(question) {
 }
 
 const program = new Command();
-program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.0");
+program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.1");
 
 program
   .command("start")
@@ -18,6 +18,11 @@ program
   .action((opts) => {
     const { start } = require("../src/daemon");
     start(Number(opts.port));
+
+    const { checkForUpdate, formatUpdateNotice } = require("../src/update-check");
+    checkForUpdate().then((update) => {
+      if (update) console.log(formatUpdateNotice(update));
+    });
   });
 
 program
@@ -95,6 +100,9 @@ program
     } catch {
       // account status is a nice-to-have, don't fail the whole command over it
     }
+    const { checkForUpdate, formatUpdateNotice } = require("../src/update-check");
+    const update = await checkForUpdate();
+    if (update) console.log(formatUpdateNotice(update));
   });
 
 program
