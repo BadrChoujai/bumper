@@ -80,7 +80,28 @@ function createDaemon() {
       return res.json({ decision: "deny", reason, upgradeUrl: quota.upgradeUrl });
     }
 
-    // "ask" -> hold for a human decision, with a timeout fallback
+    // Hook-based agents (everything except the MCP fallback) have their own
+    // native permission UI — hand the decision straight back as "ask" with
+    // the plain-English reason attached, and let the agent show its own
+    // prompt instantly instead of blocking on Bumper's web inbox. This means
+    // Bumper never learns what the human actually chose (that lives inside
+    // the agent now) — logged here as "asked", not as the eventual outcome.
+    if (request.agent !== "mcp") {
+      const entry = {
+        id: crypto.randomUUID(),
+        ts: new Date().toISOString(),
+        request,
+        decision: "ask",
+        reason: plainText,
+        source: "policy-native-ask",
+      };
+      appendAudit(entry);
+      return res.json({ decision: "ask", reason: plainText });
+    }
+
+    // MCP fallback has no native prompt to defer to, so this is the one path
+    // that still blocks on a human decision via the web inbox, with a
+    // timeout fallback.
     const id = crypto.randomUUID();
     const timeoutMs = (policy.timeout_seconds || 90) * 1000;
 

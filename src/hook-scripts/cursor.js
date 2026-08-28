@@ -17,7 +17,7 @@ const { readStdin, checkWithDaemon, normalizeInput } = require("./core");
 
   process.stdout.write(
     JSON.stringify({
-      permission: result.decision === "deny" ? "deny" : "allow",
+      permission: result.decision === "deny" ? "deny" : result.decision === "ask" ? "ask" : "allow",
       user_message: result.reason,
       agent_message: result.reason,
     })

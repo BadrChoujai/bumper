@@ -20,7 +20,7 @@ const { readStdin, checkWithDaemon, normalizeInput } = require("./core");
     JSON.stringify({
       hookSpecificOutput: {
         hookEventName: "PreToolUse",
-        permissionDecision: result.decision === "deny" ? "deny" : "allow",
+        permissionDecision: result.decision === "deny" ? "deny" : result.decision === "ask" ? "ask" : "allow",
         permissionDecisionReason: result.reason,
       },
     })

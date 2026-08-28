@@ -12,8 +12,11 @@ function readStdin() {
 
 async function checkWithDaemon(request) {
   try {
+    // "ask" now resolves instantly (the calling agent's own native prompt
+    // handles the wait, not this request) -- this timeout is just a safety
+    // net against a genuinely hung daemon, not a real wait window anymore.
     const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), 10 * 60 * 1000);
+    const timer = setTimeout(() => controller.abort(), 15 * 1000);
     const res = await fetch(`${DAEMON_URL}/check`, {
       method: "POST",
       headers: { "content-type": "application/json" },

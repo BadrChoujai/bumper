@@ -14,7 +14,7 @@ bumper start
 bumper login
 ```
 
-`bumper start` runs the local daemon and the approval inbox at `http://localhost:4790`. Leave it running in the background. `bumper login` signs you in with just your email — a one-time code, no password — and is required before Bumper will protect anything.
+`bumper start` runs the local daemon. Leave it running in the background. `bumper login` signs you in with just your email — a one-time code, no password — and is required before Bumper will protect anything. Risky actions get caught right inside the agent you're already using, via its own native permission prompt — no separate window to open.
 
 Then wire it into whichever agent(s) you use:
 
@@ -45,7 +45,7 @@ Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~
 ## How a decision gets made
 
 - **Allow** / **Deny** — matches a rule, resolves instantly, nothing shown to you.
-- **Ask** — pauses the agent and opens the approval inbox. If you don't respond within the configured timeout (90 seconds by default), it plays it safe and denies.
+- **Ask** — the agent itself pauses and shows you Bumper's plain-English explanation right there, using its own native permission prompt (Claude Code, Cursor, Copilot CLI) — nothing to open, no separate window. The MCP fallback path (for agents without a native hook) instead opens the approval inbox at `http://localhost:4790` and waits up to 90 seconds before playing it safe and denying.
 
 ## Other commands
 
