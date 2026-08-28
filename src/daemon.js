@@ -63,14 +63,17 @@ function createDaemon() {
       return res.json({ decision: result.decision, reason: plainText });
     }
 
-    // Deliberate scope: only the ask-popup stands down here, never an
-    // automatic "deny" above (that's a silent hard block, not a popup, and
-    // stays enforced regardless of mode). When the agent itself has been
-    // told not to interrupt the human (auto/bypass-style modes), Bumper's
-    // own ask popup would be a contradiction, so it auto-allows instead of
-    // asking -- and doesn't count against quota, since nothing was paused.
+    // Narrow, deliberate scope: this only stands down the *unmatched
+    // fallback* ask (result.rule is null -- nothing in the danger pack
+    // matched, policy.default just happens to say "ask"). It must never
+    // apply when an actual curated rule matched (force-push, npm publish,
+    // secrets, DROP TABLE, chmod 777, curl|sh, ...) -- those are exactly
+    // what Bumper exists to catch, and should always ask regardless of
+    // mode. An earlier version of this check didn't distinguish the two
+    // and silently waved through real danger-pack matches in auto mode --
+    // that was a real bug, not the intended behavior.
     const STAND_DOWN_MODES = ["acceptEdits", "auto", "dontAsk", "bypassPermissions"];
-    if (STAND_DOWN_MODES.includes(request.permissionMode)) {
+    if (!result.rule && STAND_DOWN_MODES.includes(request.permissionMode)) {
       const reason = `${plainText} (auto-allowed — the agent is in ${request.permissionMode} mode, so Bumper didn't interrupt.)`;
       const entry = {
         id: crypto.randomUUID(),
