@@ -1,0 +1,15 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<rect x="3" y="3" width="94" height="94" rx="20" fill="#185536"/>
+<rect x="3" y="3" width="94" height="94" rx="20" fill="none" stroke="#226e46" stroke-width="1"/>
+<g stroke-linejoin="round" fill="none">
+<path d="M30,21 L30,79" stroke="#2b3238" stroke-width="15" stroke-linecap="butt"/>
+<path d="M30,23 L60,23 Q69,23 69,32 L69,41 Q69,50 60,50 L30,50" stroke="#2b3238" stroke-width="15" stroke-linecap="butt"/>
+<path d="M30,50 L64,50 Q75,50 75,60 L75,69 Q75,79 64,79 L30,79" stroke="#2b3238" stroke-width="15" stroke-linecap="butt"/>
+<path d="M30,21 L30,79" stroke="#c7ccd1" stroke-width="6" stroke-linecap="butt"/>
+<path d="M30,23 L60,23 Q69,23 69,32 L69,41 Q69,50 60,50 L30,50" stroke="#c7ccd1" stroke-width="6" stroke-linecap="butt"/>
+<path d="M30,50 L64,50 Q75,50 75,60 L75,69 Q75,79 64,79 L30,79" stroke="#c7ccd1" stroke-width="6" stroke-linecap="butt"/>
+<path d="M30,21 L30,79" stroke="#f4f5f6" stroke-width="1.5" stroke-linecap="butt"/>
+<path d="M30,23 L60,23 Q69,23 69,32 L69,41 Q69,50 60,50 L30,50" stroke="#f4f5f6" stroke-width="1.5" stroke-linecap="butt"/>
+<path d="M30,50 L64,50 Q75,50 75,60 L75,69 Q75,79 64,79 L30,79" stroke="#f4f5f6" stroke-width="1.5" stroke-linecap="butt"/>
+</g>
+</svg>

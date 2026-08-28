@@ -1,5 +1,6 @@
 <meta charset="utf-8">
 <title>Bumper</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -232,11 +233,7 @@
   }
   .wordmark .mark {
     width: 26px; height: 26px;
-    border-radius: var(--radius-sm);
-    background: var(--accent);
-    display: grid; place-items: center;
-    color: var(--accent-contrast);
-    font-size: 15px;
+    display: block;
   }
   .site-nav nav { display: flex; gap: var(--s-7); align-items: center; }
   .site-nav nav a {
@@ -722,7 +719,21 @@
 <header class="site">
   <div class="wrap site-nav">
     <a class="wordmark" href="#top">
-      <span class="mark">B</span>
+      <svg class="mark" viewBox="0 0 100 100" aria-hidden="true">
+        <rect x="3" y="3" width="94" height="94" rx="20" fill="#185536"/>
+        <rect x="3" y="3" width="94" height="94" rx="20" fill="none" stroke="#226e46" stroke-width="1"/>
+        <g stroke-linejoin="round" fill="none">
+          <path d="M30,21 L30,79" stroke="#2b3238" stroke-width="15" stroke-linecap="butt"/>
+          <path d="M30,23 L60,23 Q69,23 69,32 L69,41 Q69,50 60,50 L30,50" stroke="#2b3238" stroke-width="15" stroke-linecap="butt"/>
+          <path d="M30,50 L64,50 Q75,50 75,60 L75,69 Q75,79 64,79 L30,79" stroke="#2b3238" stroke-width="15" stroke-linecap="butt"/>
+          <path d="M30,21 L30,79" stroke="#c7ccd1" stroke-width="6" stroke-linecap="butt"/>
+          <path d="M30,23 L60,23 Q69,23 69,32 L69,41 Q69,50 60,50 L30,50" stroke="#c7ccd1" stroke-width="6" stroke-linecap="butt"/>
+          <path d="M30,50 L64,50 Q75,50 75,60 L75,69 Q75,79 64,79 L30,79" stroke="#c7ccd1" stroke-width="6" stroke-linecap="butt"/>
+          <path d="M30,21 L30,79" stroke="#f4f5f6" stroke-width="1.5" stroke-linecap="butt"/>
+          <path d="M30,23 L60,23 Q69,23 69,32 L69,41 Q69,50 60,50 L30,50" stroke="#f4f5f6" stroke-width="1.5" stroke-linecap="butt"/>
+          <path d="M30,50 L64,50 Q75,50 75,60 L75,69 Q75,79 64,79 L30,79" stroke="#f4f5f6" stroke-width="1.5" stroke-linecap="butt"/>
+        </g>
+      </svg>
       Bumper
     </a>
     <nav>
