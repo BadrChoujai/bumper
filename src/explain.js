@@ -11,7 +11,8 @@ function fillTemplate(template, request) {
 }
 
 // Fallback heuristics for requests that fall through to the default policy
-// (no specific rule matched, but the default decision is "ask").
+// with no specific rule matched -- e.g. a custom policy.yaml that changed
+// `default` without redeclaring the built-in danger-pack rules.
 const FALLBACK_PATTERNS = [
   {
     test: (r) => /rm\s+-rf/i.test(r.command || ""),
@@ -48,12 +49,12 @@ function genericExplain(request) {
     if (p.test(request)) return p.explain(request);
   }
   if (request.command) {
-    return `This command isn't covered by one of Bumper's automatic rules yet, so it's pausing for your review before running it.`;
+    return `This command isn't covered by one of Bumper's automatic rules.`;
   }
   if (request.file) {
-    return `Changing this file isn't covered by one of Bumper's automatic rules yet, so it's pausing for your review before writing it.`;
+    return `Changing this file isn't covered by one of Bumper's automatic rules.`;
   }
-  return `Using ${request.tool || "this tool"} this way isn't covered by one of Bumper's automatic rules yet, so it's pausing for your review.`;
+  return `Using ${request.tool || "this tool"} this way isn't covered by one of Bumper's automatic rules.`;
 }
 
 // matchedRule: the policy rule that matched (may carry its own `explain` template), or null
