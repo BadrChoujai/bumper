@@ -72,6 +72,7 @@ bumper mcp              # run as an MCP server (stdio) — fallback for agents w
 - **Protection depends on the daemon running.** If `bumper start` isn't running, hooks fail *open* — actions go through unchecked rather than getting stuck. `bumper autostart enable` fixes this by starting the daemon automatically on login (Startup folder on Windows, launchd on macOS, systemd on Linux — Windows is live-tested, macOS/Linux are implemented the same way but not yet run-tested).
 - **Codex CLI has no live hook.** Real parity gap, not something Bumper can fix alone — depends on Codex CLI exposing one.
 - **Copilot CLI's hook schema isn't locked down upstream.** Verified against a real install, but a future Copilot CLI update could change it. `bumper install copilot` checks the installed version and warns if it's drifted from the one last verified.
+- **Ask-decisions stand down when the agent is in an auto/bypass mode** (Claude Code's `acceptEdits`, `auto`, `dontAsk`, or `bypassPermissions`) — if the agent itself has been told not to interrupt you, Bumper's own ask-popup would contradict that, so it auto-allows instead. Automatic *deny* rules (like `rm -rf *`) still apply regardless of mode — that's a silent hard block, not a popup. Currently only wired up for Claude Code; Cursor and Copilot CLI don't send a mode signal yet, so their ask-decisions always pause as normal.
 
 ## Privacy
 

@@ -14,6 +14,7 @@ const { readStdin, checkWithDaemon, normalizeInput } = require("./core");
     content: norm.content,
     cwd: raw.cwd,
     session_id: raw.session_id,
+    permissionMode: raw.permission_mode,
   });
 
   process.stdout.write(

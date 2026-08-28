@@ -63,6 +63,27 @@ function createDaemon() {
       return res.json({ decision: result.decision, reason: plainText });
     }
 
+    // Deliberate scope: only the ask-popup stands down here, never an
+    // automatic "deny" above (that's a silent hard block, not a popup, and
+    // stays enforced regardless of mode). When the agent itself has been
+    // told not to interrupt the human (auto/bypass-style modes), Bumper's
+    // own ask popup would be a contradiction, so it auto-allows instead of
+    // asking -- and doesn't count against quota, since nothing was paused.
+    const STAND_DOWN_MODES = ["acceptEdits", "auto", "dontAsk", "bypassPermissions"];
+    if (STAND_DOWN_MODES.includes(request.permissionMode)) {
+      const reason = `${plainText} (auto-allowed — the agent is in ${request.permissionMode} mode, so Bumper didn't interrupt.)`;
+      const entry = {
+        id: crypto.randomUUID(),
+        ts: new Date().toISOString(),
+        request,
+        decision: "allow",
+        reason,
+        source: "policy-auto-mode",
+      };
+      appendAudit(entry);
+      return res.json({ decision: "allow", reason });
+    }
+
     // "ask" is the only decision that counts against the free-plan quota —
     // allow/deny above resolve silently and never touch the usage server.
     const quota = await consumeAsk();
