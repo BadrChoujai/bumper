@@ -8,7 +8,12 @@ const yaml = require("js-yaml");
 // the common causes: hardcoded secrets, destructive ops, force pushes, blind
 // script execution, and publishing/DB-wiping commands).
 const DEFAULT_POLICY = {
-  default: "ask",
+  // Only the curated rules below ever ask or deny -- everything else (touch,
+  // ls, cat, mkdir, a normal git commit, ...) runs instantly. The whole
+  // pitch is "safe things run instantly, genuinely risky things pause" --
+  // defaulting to "ask" for anything unmatched would mean asking about
+  // literally everything, which is the opposite of that promise.
+  default: "allow",
   timeout_seconds: 90,
   timeout_decision: "deny",
   rules: [

@@ -2,7 +2,7 @@
 # for every project) to customize what Bumper checks. If no policy file
 # exists, Bumper uses its built-in default rules automatically.
 
-default: ask          # allow | deny | ask  — what happens when nothing below matches
+default: allow         # allow | deny | ask  — what happens when nothing below matches
 timeout_seconds: 90    # how long to wait for you before falling back
 timeout_decision: deny # what happens if you don't respond in time
 
