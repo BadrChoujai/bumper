@@ -15,8 +15,7 @@ function fillTemplate(template, request) {
 const FALLBACK_PATTERNS = [
   {
     test: (r) => /rm\s+-rf/i.test(r.command || ""),
-    explain: (r) =>
-      `This will permanently delete files (\`${r.command}\`) with no way to undo it.`,
+    explain: () => `This will permanently delete files with no way to undo it.`,
   },
   {
     test: (r) => /git\s+push\s+(--force|-f)\b/i.test(r.command || ""),
@@ -49,12 +48,12 @@ function genericExplain(request) {
     if (p.test(request)) return p.explain(request);
   }
   if (request.command) {
-    return `Your AI assistant wants to run this: \`${request.command}\`. It's not on the list of things marked safe, so it's checking with you first.`;
+    return `This command isn't covered by one of Bumper's automatic rules yet, so it's pausing for your review before running it.`;
   }
   if (request.file) {
-    return `Your AI assistant wants to change \`${request.file}\`. That's not on the list of things marked safe, so it's checking with you first.`;
+    return `Changing this file isn't covered by one of Bumper's automatic rules yet, so it's pausing for your review before writing it.`;
   }
-  return `Your AI assistant wants to use ${request.tool || "a tool"} in a way that's not on the list of things marked safe, so it's checking with you first.`;
+  return `Using ${request.tool || "this tool"} this way isn't covered by one of Bumper's automatic rules yet, so it's pausing for your review.`;
 }
 
 // matchedRule: the policy rule that matched (may carry its own `explain` template), or null
