@@ -51,6 +51,7 @@ Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~
 
 ```bash
 bumper status          # is the daemon running, are you logged in, how many decisions are pending
+bumper update            # update to the latest version and restart the daemon
 bumper login             # sign in with an email code — required before protection works
 bumper logout            # sign out of this install
 bumper log              # recent decisions, automatic and human

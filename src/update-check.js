@@ -47,7 +47,7 @@ async function checkForUpdate() {
 }
 
 function formatUpdateNotice({ current, latest }) {
-  return `A newer version of bumper is available: ${current} -> ${latest}. Run \`npm install -g bumper-guard\` to update.`;
+  return `A newer version of bumper is available: ${current} -> ${latest}. Run \`bumper update\` to update.`;
 }
 
 module.exports = { checkForUpdate, formatUpdateNotice, isNewer, CURRENT_VERSION };

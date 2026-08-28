@@ -192,6 +192,14 @@ function createDaemon() {
 
   app.get("/health", (req, res) => res.json({ ok: true, pending: pending.size }));
 
+  // Lets `bumper update` release the daemon's file handles on its own
+  // package directory before npm tries to rename it -- without this, an
+  // update over a running daemon fails with EBUSY on Windows every time.
+  app.post("/shutdown", (req, res) => {
+    res.json({ ok: true });
+    setTimeout(() => process.exit(0), 150);
+  });
+
   app.get("/account", async (req, res) => {
     const account = await getAccount({ fresh: req.query.fresh === "1" });
     res.json(account);

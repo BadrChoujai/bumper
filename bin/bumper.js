@@ -9,7 +9,7 @@ function prompt(question) {
 }
 
 const program = new Command();
-program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.5");
+program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.6");
 
 program
   .command("start")
@@ -23,6 +23,35 @@ program
     checkForUpdate().then((update) => {
       if (update) console.log(formatUpdateNotice(update));
     });
+  });
+
+program
+  .command("update")
+  .description("update bumper to the latest version and restart the daemon")
+  .option("-p, --port <port>", "port the running daemon is on", "4790")
+  .action(async (opts) => {
+    console.log("stopping the daemon...");
+    try {
+      await fetch(`http://localhost:${opts.port}/shutdown`, { method: "POST", signal: AbortSignal.timeout(2000) });
+    } catch {
+      // not running, or already stopped -- nothing to release, carry on
+    }
+    await new Promise((r) => setTimeout(r, 500));
+
+    console.log("updating (npm install -g bumper-guard)...");
+    const { spawnSync, spawn } = require("child_process");
+    const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
+    const result = spawnSync(npmCmd, ["install", "-g", "bumper-guard"], { stdio: "inherit" });
+    if (result.status !== 0) {
+      console.error("update failed — run `bumper start` yourself once you've sorted it out.");
+      process.exitCode = 1;
+      return;
+    }
+
+    console.log("restarting the daemon...");
+    const child = spawn(process.execPath, [__filename, "start"], { detached: true, stdio: "ignore" });
+    child.unref();
+    console.log("updated and running.");
   });
 
 program
