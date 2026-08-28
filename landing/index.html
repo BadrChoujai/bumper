@@ -248,36 +248,33 @@
   }
 
   /* ============ Hero ============ */
-  .hero { padding-top: var(--s-11); }
-  .hero-top {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: var(--s-9);
-    align-items: start;
-  }
-  @media (max-width: 860px) {
-    .hero-top { grid-template-columns: 1fr; gap: var(--s-7); }
+  .hero { padding: var(--s-11) 0 var(--s-9); text-align: center; }
+  .hero-inner {
+    display: flex; flex-direction: column; align-items: center; gap: var(--s-7);
+    max-width: 620px; margin: 0 auto;
   }
   h1.hero-title {
     font-family: var(--font-display);
     font-weight: 400;
-    font-size: clamp(40px, 6vw, var(--text-5xl));
-    line-height: 1.1;
+    font-size: clamp(32px, 5vw, 44px);
+    line-height: 1.2;
     letter-spacing: -0.02em;
     text-wrap: balance;
   }
   h1.hero-title em {
+    display: block;
     font-style: italic; font-weight: 400; color: var(--danger-bright);
-    display: inline-block;
+    font-size: clamp(52px, 9vw, 92px);
+    line-height: 1.05;
+    margin-top: var(--s-4);
     transition: opacity var(--duration-slow) ease, transform var(--duration-slow) ease;
   }
   h1.hero-title em.swap { opacity: 0; transform: translateY(6px); }
   @media (prefers-reduced-motion: reduce) {
     h1.hero-title em { transition: none; }
   }
-  .hero-side { display: flex; flex-direction: column; gap: var(--s-6); padding-top: var(--s-2); }
-  .hero-sub { font-size: var(--text-md); line-height: 1.6; color: var(--text-secondary); max-width: 38ch; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; }
+  .hero-sub { font-size: var(--text-lg); line-height: 1.6; color: var(--text-secondary); max-width: 44ch; }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; justify-content: center; }
   @media (max-width: 560px) {
     .hero-actions, .closing-cta-actions { flex-direction: column; align-items: stretch; }
     .install-copy { justify-content: space-between; }
@@ -309,7 +306,7 @@
 
   /* ============ Hero comparison (without Bumper / with Bumper) ============ */
   .hero-compare {
-    margin-top: var(--s-10);
+    margin-top: var(--s-8);
     display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-6);
   }
   @media (max-width: 720px) { .hero-compare { grid-template-columns: 1fr; } }
@@ -747,22 +744,24 @@
 <main id="top">
   <!-- ============ Hero ============ -->
   <section class="hero">
-    <div class="wrap">
-      <div class="hero-top">
-        <h1 class="hero-title">Your AI is about<br>to do something <em id="risky-word">risky</em>.</h1>
-        <div class="hero-side">
-          <p class="hero-sub">Bumper pauses it, explains what's about to happen in plain English, and waits for you to say yes or no.</p>
-          <div class="hero-actions">
-            <div class="install-copy">
-              <code id="install-cmd-text">npm install -g bumper-guard</code>
-              <button type="button" id="copy-install" aria-label="Copy install command">Copy</button>
-            </div>
-          </div>
-          <span class="hero-caption">Free during early access — sign in with just your email, no password.</span>
+    <div class="wrap hero-inner">
+      <h1 class="hero-title">Your AI is about to do something<br><em id="risky-word">risky</em></h1>
+      <p class="hero-sub">Bumper pauses it, explains what's about to happen in plain English, and waits for you to say yes or no.</p>
+      <div class="hero-actions">
+        <div class="install-copy">
+          <code id="install-cmd-text">npm install -g bumper-guard</code>
+          <button type="button" id="copy-install" aria-label="Copy install command">Copy</button>
         </div>
       </div>
+      <span class="hero-caption">Free during early access — sign in with just your email, no password.</span>
+    </div>
+  </section>
 
-      <!-- ============ Live comparison: without Bumper / with Bumper ============ -->
+  <!-- ============ Live comparison: without Bumper / with Bumper ============ -->
+  <section id="demo" class="demo-section">
+    <div class="wrap">
+      <span class="eyebrow">See it in action</span>
+      <h2 class="section-title">The same command. Two different outcomes.</h2>
       <div class="hero-compare">
         <div class="compare-panel bad">
           <div class="compare-head">
@@ -1099,7 +1098,7 @@
   <section id="cta" class="closing-cta">
     <div class="wrap closing-cta-inner">
       <h2 class="section-title">Protect the next thing you build.</h2>
-      <p class="section-lede">One install, wired into the agent you already have open. Free for as long as we're figuring this out together.</p>
+      <p class="section-lede">One install, wired into the agent you already have open. Free during early access — sign in and you're protected in under a minute.</p>
       <div class="closing-cta-actions">
         <div class="install-copy">
           <code id="install-cmd-text-2">npm install -g bumper-guard</code>
