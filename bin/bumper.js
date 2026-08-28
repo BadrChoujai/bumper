@@ -9,7 +9,7 @@ function prompt(question) {
 }
 
 const program = new Command();
-program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.1.1");
+program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.0");
 
 program
   .command("start")
