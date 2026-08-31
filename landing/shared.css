@@ -251,18 +251,16 @@ header.site {
   .site-nav nav {
     position: absolute;
     top: 100%; left: 0; right: 0;
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows var(--duration-normal) ease;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height var(--duration-normal) ease;
     background: var(--glass-bg-strong);
     -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
     backdrop-filter: blur(var(--glass-blur)) saturate(180%);
     border-bottom: 1px solid var(--glass-border);
   }
-  .site-nav nav.open { grid-template-rows: 1fr; }
+  .site-nav nav.open { max-height: 400px; border-bottom-width: 1px; }
   .nav-inner {
-    min-height: 0;
-    overflow: hidden;
     flex-direction: column;
     align-items: stretch;
     gap: 0;
