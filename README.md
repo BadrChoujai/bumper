@@ -1,6 +1,6 @@
 # Bumper
 
-> **⚠️ Beta** — Early access. May have bugs. Feature-complete and production-ready for most use cases, but please report issues.
+> **Beta** — Early access. Please report issues.
 
 A plain-language safety net for vibe coders.
 
