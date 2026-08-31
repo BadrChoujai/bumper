@@ -49,13 +49,13 @@ BUMPER_SERVER_URL=http://localhost:8787 bumper start
 ## Going live — what you need to set up
 
 1. **Postgres.** Supabase or Neon both have a free tier that's plenty to start — create a project, copy its connection string into `DATABASE_URL`, then run `npm run migrate` once against it.
-2. **Host it somewhere with a public URL.** Render/Cloud Run free tiers work but spin down when idle, adding cold-start latency to whichever "ask" event wakes them back up — an always-on host (a small VM, or a tunnel into a machine you already run) avoids that if it matters to you.
+2. **Host it on Render.** A `render.yaml` Blueprint lives at the repo root — in the Render dashboard, "New" → "Blueprint", point it at this repo, and it picks up the Docker service defined there (rootDir `server/`, health check `/health`) automatically. Fill in the `sync: false` secrets (`DATABASE_URL`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `STRIPE_PRICE_ID`, `RESEND_API_KEY`) in the dashboard after the first deploy — Blueprints don't accept secret values inline. Free plan spins the service down after 15 min idle, adding cold-start latency to whichever "ask" event or Stripe webhook wakes it back up; switch `plan: free` to `plan: starter` in `render.yaml` (~$7/mo) for always-on once that matters. Previously hosted on Fly.io — moved off after exceeding Fly's free usage allowance (`fly.toml` is still in this repo for reference but is no longer the deploy target).
 3. **Stripe** (free to create, no monthly fee):
    - Create a Product + a recurring Price for the Pro plan → copy the Price ID into `STRIPE_PRICE_ID`.
    - Copy your secret key (`sk_test_...` while testing, `sk_live_...` once real) into `STRIPE_SECRET_KEY`.
    - Add a webhook endpoint in the Stripe dashboard pointing at `https://<your-host>/webhook/stripe`, listening for `checkout.session.completed` and `customer.subscription.deleted` → copy the signing secret into `STRIPE_WEBHOOK_SECRET`.
 4. Set `CHECKOUT_SUCCESS_URL` / `CHECKOUT_CANCEL_URL` to real pages once you have a landing site.
 5. **Resend** (free, no card) for the actual login codes — an API key alone only sends to your own verified address via the sandbox sender; a verified domain is needed before other people's emails will receive anything.
-6. The CLI already points at the production host by default (`src/account.js`) — nothing else to wire up once this is deployed.
+6. **Cut the CLI over once Render is confirmed live.** `src/account.js`'s `DEFAULT_SERVER_URL` still points at the old `https://bumper-usage-server.fly.dev` — update it to the Render URL (`https://bumper-usage-server.onrender.com`, or a custom domain mapped in the Render dashboard) only after verifying `/health` responds and a real login round-trip works end to end. Flipping it before that cuts off login for every installed copy of the CLI.
 
 See `.env.example` for the full list of env vars.

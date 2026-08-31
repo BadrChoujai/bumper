@@ -1,0 +1,31 @@
+services:
+  - type: web
+    name: bumper-usage-server
+    runtime: docker
+    rootDir: server
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    plan: free
+    region: frankfurt
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "8787"
+      - key: DATABASE_URL
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_PRICE_ID
+        sync: false
+      - key: RESEND_API_KEY
+        sync: false
+      - key: CHECKOUT_SUCCESS_URL
+        value: https://bumper-guard.pages.dev/
+      - key: CHECKOUT_CANCEL_URL
+        value: https://bumper-guard.pages.dev/#pricing
+      - key: FREE_ASKS_PER_MONTH
+        value: "15"
+      - key: ENFORCE_QUOTA
+        value: "false"
