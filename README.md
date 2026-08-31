@@ -44,17 +44,17 @@ A default "danger pack" ships out of the box — 50+ rules, covering every categ
 
 Copy `bumper.policy.example.yaml` to add your own rules on top of this — it doesn't replace the built-in pack, only extends it.
 
-Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~/.bumper/policy.yaml` for every project) to add your own rules. See the file for the format — `match` on `command` (glob), `file` (glob), or `content_pattern` (regex against code being written), a `decision` of `allow`/`deny`/`ask`, and an `explain` string in plain English.
+Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~/.bumper/policy.yaml` for every project) to add your own rules. See the file for the format — `match` on `command` (glob), `file` (glob), or `content_pattern` (regex against code being written), a `decision` of `allow`/`deny`/`ask`, and either an `explain` string in plain English or a built-in `category` (`recursive-delete`, `force-push`, `unpublish`, `env-write`, `secret-write`) that supplies the wording for you. Rules with neither still get a plain, honest fallback message instead of silence.
 
 ## How a decision gets made
 
 - **Allow** / **Deny** — matches a rule, resolves instantly, nothing shown to you.
-- **Ask** — the agent itself pauses and shows you Bumper's plain-English explanation right there, using its own native permission prompt (Claude Code, Cursor, Copilot CLI) — nothing to open, no separate window. The MCP fallback path (for agents without a native hook) instead opens the approval inbox at `http://localhost:4790` and waits up to 90 seconds before playing it safe and denying.
+- **Ask** — the agent itself pauses and shows you Bumper's plain-English explanation right there, using its own native permission prompt (Claude Code, Cursor, Copilot CLI) — nothing to open, no separate window. The MCP fallback path (for agents without a native hook) has no human inbox to defer to, so it plays it safe and denies instead — automatic allow/deny rules still apply normally either way.
 
 ## Other commands
 
 ```bash
-bumper status          # is the daemon running, are you logged in, how many decisions are pending
+bumper status          # is the daemon running, are you logged in
 bumper update            # update to the latest version and restart the daemon
 bumper login             # sign in with an email code — required before protection works
 bumper logout            # sign out of this install

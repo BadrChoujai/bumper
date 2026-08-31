@@ -22,9 +22,6 @@ function appendAudit(entry) {
 function createDaemon() {
   const app = express();
   app.use(express.json());
-  app.use(express.static(path.join(__dirname, "..", "web")));
-
-  const pending = new Map(); // id -> { request, resolve, createdAt, plainText }
 
   app.post("/check", async (req, res) => {
     const request = req.body || {};
@@ -107,9 +104,9 @@ function createDaemon() {
     // Hook-based agents (everything except the MCP fallback) have their own
     // native permission UI — hand the decision straight back as "ask" with
     // the plain-English reason attached, and let the agent show its own
-    // prompt instantly instead of blocking on Bumper's web inbox. This means
-    // Bumper never learns what the human actually chose (that lives inside
-    // the agent now) — logged here as "asked", not as the eventual outcome.
+    // prompt instantly. This means Bumper never learns what the human
+    // actually chose (that lives inside the agent now) — logged here as
+    // "asked", not as the eventual outcome.
     if (request.agent !== "mcp") {
       const entry = {
         id: crypto.randomUUID(),
@@ -123,65 +120,23 @@ function createDaemon() {
       return res.json({ decision: "ask", reason: plainText });
     }
 
-    // MCP fallback has no native prompt to defer to, so this is the one path
-    // that still blocks on a human decision via the web inbox, with a
-    // timeout fallback.
-    const id = crypto.randomUUID();
-    const timeoutMs = (policy.timeout_seconds || 90) * 1000;
-
-    const timer = setTimeout(() => {
-      if (!pending.has(id)) return;
-      pending.delete(id);
-      const reason = `Bumper didn't hear back from you in time, so it played it safe and said no. Ask your assistant to try again if you want to allow it.`;
-      const entry = {
-        id,
-        ts: new Date().toISOString(),
-        request,
-        decision: policy.timeout_decision,
-        reason,
-        source: "timeout",
-      };
-      appendAudit(entry);
-      res.json({ decision: policy.timeout_decision, reason });
-    }, timeoutMs);
-
-    pending.set(id, {
+    // MCP fallback has no native prompt to defer to, and no local inbox to
+    // put a human decision in front of anymore -- so a genuinely unclear
+    // "ask" case can't safely become anything other than the policy's
+    // fail-safe timeout decision (deny by default). Automatic allow/deny
+    // rules above are unaffected; this only narrows what MCP mode does with
+    // the truly ambiguous middle bucket.
+    const reason = `${plainText} (Bumper's MCP fallback has no human inbox to ask, so it played it safe and said no. Install a native hook for this agent if one exists -- see \`bumper install\`.)`;
+    const entry = {
+      id: crypto.randomUUID(),
+      ts: new Date().toISOString(),
       request,
-      plainText,
-      createdAt: Date.now(),
-      resolve: (decision, reason) => {
-        clearTimeout(timer);
-        const entry = {
-          id,
-          ts: new Date().toISOString(),
-          request,
-          decision,
-          reason: reason || plainText,
-          source: "human",
-        };
-        appendAudit(entry);
-        res.json({ decision, reason: entry.reason });
-      },
-    });
-  });
-
-  app.get("/pending", (req, res) => {
-    const list = Array.from(pending.entries()).map(([id, v]) => ({
-      id,
-      request: v.request,
-      plainText: v.plainText,
-      createdAt: v.createdAt,
-    }));
-    res.json(list);
-  });
-
-  app.post("/decide", (req, res) => {
-    const { id, decision, reason } = req.body || {};
-    const entry = pending.get(id);
-    if (!entry) return res.status(404).json({ error: "not found or already resolved" });
-    pending.delete(id);
-    entry.resolve(decision, reason);
-    res.json({ ok: true });
+      decision: policy.timeout_decision,
+      reason,
+      source: "mcp-no-inbox",
+    };
+    appendAudit(entry);
+    return res.json({ decision: policy.timeout_decision, reason });
   });
 
   app.get("/log", (req, res) => {
@@ -193,7 +148,7 @@ function createDaemon() {
     res.json(entries.reverse());
   });
 
-  app.get("/health", (req, res) => res.json({ ok: true, pending: pending.size }));
+  app.get("/health", (req, res) => res.json({ ok: true }));
 
   // Lets `bumper update` release the daemon's file handles on its own
   // package directory before npm tries to rename it -- without this, an
@@ -221,7 +176,6 @@ function start(port) {
   const p = port || Number(process.env.BUMPER_PORT) || 4790;
   const server = app.listen(p, () => {
     console.log(`bumper is watching — http://localhost:${p}`);
-    console.log(`approve/deny inbox: http://localhost:${p}/index.html`);
   });
   return server;
 }

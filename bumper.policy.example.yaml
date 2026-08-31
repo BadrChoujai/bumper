@@ -28,7 +28,21 @@ rules:
     decision: ask
     explain: "This looks like a real (live) Stripe secret key being written into {file}. If it ever ends up somewhere public, someone could use it to charge your account."
 
+  # You don't have to write a full sentence for every rule. Reuse one of
+  # Bumper's built-in categories and it supplies the wording for you:
+  #   recursive-delete, force-push, unpublish, env-write, secret-write
+  # (secret-write also wants a short `secret_name` and `consequence`, instead
+  # of a full sentence -- see src/policy.js for examples).
+  - id: block-my-deploy-script
+    match:
+      command: "*rm -rf*dist*"
+    decision: ask
+    category: recursive-delete
+
   # Add your own rules the same way — match on `command` (glob), `file` (glob),
   # or `content_pattern` (regex, checked against code being written), then set
-  # `decision` to allow / deny / ask, and write `explain` in plain English.
-  # {command}, {file}, and {tool} get filled in automatically.
+  # `decision` to allow / deny / ask, and either write `explain` in plain
+  # English or reuse a `category` as above. {command}, {file}, and {tool} get
+  # filled in automatically. Rules with neither still get a safe, honest
+  # fallback message ("This matches your rule '...' and is set to ask.") --
+  # not a guess at what the command does, but never silent either.

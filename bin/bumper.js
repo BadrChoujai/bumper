@@ -9,11 +9,11 @@ function prompt(question) {
 }
 
 const program = new Command();
-program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.9");
+program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.10");
 
 program
   .command("start")
-  .description("start the bumper daemon (protection + approval inbox)")
+  .description("start the bumper daemon")
   .option("-p, --port <port>", "port to listen on", "4790")
   .action((opts) => {
     const { start } = require("../src/daemon");
@@ -99,8 +99,8 @@ program
   .action(async (opts) => {
     try {
       const res = await fetch(`http://localhost:${opts.port}/health`);
-      const body = await res.json();
-      console.log(`bumper is running — ${body.pending} pending decision(s)`);
+      await res.json();
+      console.log(`bumper is running`);
     } catch {
       console.log("bumper isn't running. Start it with: bumper start");
       return;
