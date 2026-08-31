@@ -39,7 +39,7 @@ function ensureDeviceId() {
 // makes login required out of the box. Overridable (env var or
 // { "serverUrl": "..." } in ~/.bumper/config.json) for local development
 // against a test server, or set to "" to fully disable and run dormant/local-only.
-const DEFAULT_SERVER_URL = "https://bumper-usage-server.fly.dev";
+const DEFAULT_SERVER_URL = "https://bumper-usage-server.onrender.com";
 
 function serverUrl() {
   const configured = process.env.BUMPER_SERVER_URL ?? loadConfig().serverUrl;

@@ -435,6 +435,12 @@
         <p class="lede">What's been verified, and against what — dated, not vague.</p>
         <div class="changelog">
           <div class="changelog-entry">
+            <span class="changelog-date">2026-08-31</span>
+            <div class="changelog-body">
+              <p>Moved the usage/auth server off Fly.io to Render after exceeding Fly's free usage allowance (the service ran <code>min_machines_running = 1</code> — always-on, never scaled to zero). Deployed via a <code>render.yaml</code> Blueprint against the same Dockerfile. Verified live: <code>/health</code> responding at the new host before cutting the CLI's default server URL over from <code>bumper-usage-server.fly.dev</code> to <code>bumper-usage-server.onrender.com</code>.</p>
+            </div>
+          </div>
+          <div class="changelog-entry">
             <span class="changelog-date">2026-08-25</span>
             <div class="changelog-body">
               <p>Shipped <code>bumper autostart enable|disable|status</code>. Windows uses the Startup folder (a hidden launcher script) rather than Task Scheduler, after Task Scheduler's own per-user logon task refused permission on the machine this was built on. Live-tested: ran the launcher exactly as Windows would at login, confirmed the daemon actually came up.</p>
