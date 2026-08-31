@@ -5,169 +5,11 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 
 <style>
-  /* ============ Tokens ============ */
-  :root {
-    --ground: #f6f7f5;
-    --surface: #ffffff;
-    --surface-strong: #edf1ea;
-    --border: #dde2d8;
-    --border-strong: #c7cec0;
-    --text-primary: #16201a;
-    --text-secondary: #4c5347;
-    --text-tertiary: #5c6355;
-    --accent: #226e46;
-    --accent-strong: #185536;
-    --accent-bright: #2f8f5b;
-    --accent-soft: #e3f1e8;
-    --accent-contrast: #ffffff;
-    --danger: #a94a3b;
-    --danger-strong: #833a2d;
-    --danger-bright: #c85c4a;
-    --danger-soft: #fbe9e5;
-    --danger-contrast: #ffffff;
-    --focus-ring: #226e46;
-
-    --font-display: 'Instrument Serif', Georgia, serif;
-    --font-body: 'Manrope', 'Manrope Fallback', system-ui, sans-serif;
-    --font-mono: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, monospace;
-
-    --s-1: 4px; --s-2: 6px; --s-3: 8px; --s-4: 10px; --s-5: 12px;
-    --s-6: 14px; --s-7: 16px; --s-8: 20px; --s-9: 40px; --s-10: 56px; --s-11: 88px;
-
-    --text-2xs: 10.5px; --text-xs: 12px; --text-sm: 14px; --text-md: 15px; --text-lg: 16px;
-    --text-xl: 18px; --text-2xl: 20px; --text-3xl: 26px; --text-4xl: 44px; --text-5xl: 64px;
-
-    --radius-xs: 5px; --radius-sm: 8px; --radius-pill: 999px;
-    --duration: 150ms;
-    --duration-fast: 180ms;
-    --duration-normal: 200ms;
-    --duration-slow: 350ms;
-
-    --shadow-inset-1: inset 0 1px 0 0 rgba(255,255,255,0.06);
-    --shadow-inset-2:
-      inset 0 1px 0 0 rgba(255,255,255,0.22),
-      inset 0 -1px 0 0 rgba(0,0,0,0.18),
-      0 1px 2px 0 rgba(0,0,0,0.35);
-
-    /* Terminal chrome is deliberately theme-invariant — a code block should
-       always read as a dark terminal window, the same way it does in every
-       editor and every docs site, regardless of the page's own theme. */
-    --terminal-bg: #10140f;
-    --terminal-surface: #171d13;
-    --terminal-text: #e7ece3;
-    --terminal-muted: #7c8674;
-    --terminal-prompt: #6bcf98;
-    --terminal-danger: #e0836a;
-    --terminal-border: #262d1f;
-
-    color-scheme: light;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground: #0a130e;
-      --surface: #0f1a14;
-      --surface-strong: #16241b;
-      --border: #24352a;
-      --border-strong: #33472f;
-      --text-primary: #edf3ec;
-      --text-secondary: #a9b6a1;
-      --text-tertiary: #77876f;
-      --accent: #4bb37c;
-      --accent-strong: #6bcf98;
-      --accent-bright: #4bb37c;
-      --accent-soft: #16301f;
-      --accent-contrast: #06170e;
-      --danger: #e0836a;
-      --danger-strong: #f0a488;
-      --danger-bright: #e0836a;
-      --danger-soft: #351b13;
-      --danger-contrast: #1a0906;
-      --focus-ring: #6bcf98;
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --ground: #0a130e;
-    --surface: #0f1a14;
-    --surface-strong: #16241b;
-    --border: #24352a;
-    --border-strong: #33472f;
-    --text-primary: #edf3ec;
-    --text-secondary: #a9b6a1;
-    --text-tertiary: #77876f;
-    --accent: #4bb37c;
-    --accent-strong: #6bcf98;
-    --accent-soft: #16301f;
-    --accent-contrast: #06170e;
-    --danger: #e0836a;
-    --danger-strong: #f0a488;
-    --danger-soft: #351b13;
-    --danger-contrast: #1a0906;
-    --focus-ring: #6bcf98;
-    color-scheme: dark;
-  }
-
-  /* ============ Reset-ish ============ */
-  * { box-sizing: border-box; }
-  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
-  body {
-    margin: 0;
-    background: var(--ground);
-    color: var(--text-primary);
-    font-family: var(--font-body);
-    font-size: var(--text-md);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  img, svg { display: block; max-width: 100%; }
-  a { color: inherit; }
-  button { font: inherit; color: inherit; }
-  h1, h2, h3, p { margin: 0; }
-  ul { margin: 0; padding: 0; list-style: none; }
-
-  :focus-visible {
-    outline: 2px solid var(--focus-ring);
-    outline-offset: 2px;
-    border-radius: 4px;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    html { scroll-behavior: auto; }
-  }
-
-  .wrap {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 var(--s-7);
-  }
-  @media (max-width: 640px) {
-    .wrap { padding: 0 var(--s-5); }
-  }
-
   section { padding: var(--s-10) 0; overflow-x: auto; }
   section + section { border-top: 1px solid var(--border); }
-
-  .eyebrow {
-    font-family: var(--font-mono);
-    font-size: var(--text-2xs);
-    font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--accent-strong);
-    display: inline-flex;
-    align-items: center;
-    gap: var(--s-3);
-  }
-  .eyebrow::before {
-    content: "";
-    width: 6px; height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
 
   h2.section-title {
     font-family: var(--font-display);
@@ -192,7 +34,7 @@
     align-items: center;
     gap: var(--s-3);
     padding: var(--s-4) var(--s-7);
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-pill);
     font-weight: 600;
     font-size: var(--text-sm);
     border: 1px solid transparent;
@@ -205,50 +47,32 @@
   .btn-primary { background: var(--accent); color: var(--accent-contrast); box-shadow: var(--shadow-inset-2); }
   .btn-primary:hover { background: var(--accent-strong); }
   .btn-ghost { background: transparent; color: var(--text-primary); border-color: var(--border-strong); }
-  .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost:hover {
+    border-color: var(--accent); color: var(--accent);
+    background: var(--glass-bg);
+    -webkit-backdrop-filter: blur(12px) saturate(160%);
+    backdrop-filter: blur(12px) saturate(160%);
+  }
   .btn-deny { background: var(--danger); color: var(--danger-contrast); box-shadow: var(--shadow-inset-2); }
   .btn-deny:hover { background: var(--danger-strong); }
   .btn:disabled { opacity: 0.5; cursor: default; }
 
-  code, .mono { font-family: var(--font-mono); }
-
-  /* ============ Header ============ */
-  header.site {
-    position: sticky; top: 0; z-index: 20;
-    background: color-mix(in srgb, var(--ground) 88%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
-  }
-  .site-nav {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: var(--s-5) 0;
-  }
-  .wordmark {
-    display: flex; align-items: center; gap: var(--s-3);
-    font-family: var(--font-body);
-    font-weight: 800;
-    font-size: var(--text-xl);
-    text-decoration: none;
-    color: var(--text-primary);
-  }
-  .wordmark .mark {
-    width: 26px; height: 26px;
-    display: block;
-  }
-  .site-nav nav { display: flex; gap: var(--s-7); align-items: center; }
-  .site-nav nav a {
-    text-decoration: none;
-    color: var(--text-secondary);
-    font-size: var(--text-sm);
-    font-weight: 500;
-  }
-  .site-nav nav a:hover { color: var(--text-primary); }
-  @media (max-width: 640px) {
-    .site-nav nav a.hide-mobile { display: none; }
-  }
-
   /* ============ Hero ============ */
-  .hero { padding: var(--s-11) 0 var(--s-9); text-align: center; }
+  .hero { position: relative; overflow: hidden; padding: var(--s-11) 0 var(--s-9); text-align: center; }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -260px; left: 50%;
+    width: 920px; height: 920px;
+    transform: translateX(-50%);
+    background:
+      radial-gradient(circle at 32% 28%, color-mix(in srgb, var(--accent) 38%, transparent), transparent 62%),
+      radial-gradient(circle at 68% 66%, color-mix(in srgb, var(--danger) 22%, transparent), transparent 58%);
+    filter: blur(70px);
+    opacity: 0.7;
+    pointer-events: none;
+    z-index: -1;
+  }
   .hero-inner {
     display: flex; flex-direction: column; align-items: center; gap: var(--s-7);
     max-width: 620px; margin: 0 auto;
@@ -284,8 +108,12 @@
 
   .install-copy {
     display: inline-flex; align-items: center; gap: var(--s-4);
-    background: var(--text-primary);
-    color: var(--ground);
+    background: var(--glass-bg-strong);
+    color: var(--text-primary);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    backdrop-filter: blur(var(--glass-blur)) saturate(180%);
+    border: 1px solid var(--glass-border);
+    box-shadow: var(--shadow-card);
     border-radius: var(--radius-pill);
     padding: var(--s-3) var(--s-3) var(--s-3) var(--s-6);
   }
@@ -294,7 +122,7 @@
     background: var(--accent);
     color: var(--accent-contrast);
     border: none;
-    border-radius: var(--radius-xs);
+    border-radius: var(--radius-pill);
     padding: var(--s-3) var(--s-5);
     font-weight: 600;
     font-size: var(--text-sm);
@@ -310,9 +138,9 @@
     display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-6);
   }
   @media (max-width: 720px) { .hero-compare { grid-template-columns: 1fr; } }
-  .compare-panel { border-radius: var(--radius-sm); padding: var(--s-7); border: 1px solid var(--border); }
-  .compare-panel.bad { background: var(--terminal-bg); border-color: var(--terminal-border); }
-  .compare-panel.good { background: var(--surface); box-shadow: 0 1px 2px rgba(0,0,0,0.04); }
+  .compare-panel { border-radius: var(--radius-lg); padding: var(--s-7); border: 1px solid var(--border); }
+  .compare-panel.bad { background: var(--terminal-bg); border-color: var(--terminal-border); box-shadow: var(--shadow-card); }
+  .compare-panel.good { background: var(--surface); box-shadow: var(--shadow-card); }
   .compare-head { display: flex; align-items: center; gap: var(--s-3); margin-bottom: var(--s-6); }
   .compare-dot { flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--terminal-danger); }
   .compare-dot.good { background: var(--accent-bright); }
@@ -445,15 +273,15 @@
   /* ============ Danger pack ============ */
   .pack-grid {
     margin-top: var(--s-8);
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5);
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: var(--s-5);
   }
-  @media (max-width: 860px) { .pack-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .pack-grid { grid-template-columns: 1fr; } }
   .pack-card {
     background: var(--surface);
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-lg);
     padding: var(--s-6);
+    box-shadow: var(--shadow-card);
   }
   .pack-card .tag {
     font-family: var(--font-mono);
@@ -478,73 +306,94 @@
   /* ============ Agents ============ */
   .agent-grid {
     margin-top: var(--s-8);
-    display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s-5);
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-6);
   }
-  @media (max-width: 860px) { .agent-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 720px) { .agent-grid { grid-template-columns: 1fr; } }
   .agent-card {
     min-width: 0;
     border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--s-6);
+    border-radius: var(--radius-lg);
+    padding: var(--s-7);
     background: var(--surface);
-    display: flex; flex-direction: column; gap: var(--s-4);
+    box-shadow: var(--shadow-card);
+    display: flex; flex-direction: column; gap: var(--s-5);
   }
-  .agent-card.muted { background: var(--surface-strong); }
+  .agent-mark {
+    width: 44px; height: 44px;
+    flex: none;
+    display: flex; align-items: center; justify-content: center;
+    border-radius: var(--radius-md);
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+  }
   .agent-card-top { display: flex; align-items: center; flex-wrap: wrap; gap: var(--s-3); }
   .agent-card .name { font-family: var(--font-body); font-weight: 700; font-size: var(--text-lg); }
-  .status-pill {
-    display: inline-flex; align-items: center; gap: var(--s-2);
-    font-size: var(--text-xs);
-    font-family: var(--font-mono);
-    padding: var(--s-1) var(--s-3);
-    border-radius: var(--radius-pill);
-  }
-  .status-pill.full { background: var(--accent-soft); color: var(--accent-strong); }
-  .status-pill.limited { background: var(--danger-soft); color: var(--danger-strong); }
-  .proof-line {
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    background: var(--terminal-bg);
-    color: var(--terminal-text);
-    border-radius: var(--radius-sm);
-    padding: var(--s-3) var(--s-4);
-    overflow-x: auto;
-    white-space: pre;
-  }
-  .proof-line .prompt { color: var(--terminal-prompt); }
-  .proof-line .arrow { color: var(--terminal-muted); }
-  .proof-line .blocked { color: var(--terminal-prompt); font-weight: 600; }
-  .proof-line .asks { color: var(--terminal-muted); }
   .agent-card p { color: var(--text-secondary); font-size: var(--text-sm); }
   .inline-link { color: var(--accent-strong); font-weight: 600; text-decoration: none; }
   .inline-link:hover { text-decoration: underline; }
 
   /* ============ Pricing ============ */
+  .pricing-wrap { text-align: center; }
+  .pricing-wrap .section-title, .pricing-wrap .section-lede { margin-left: auto; margin-right: auto; }
   .pricing-grid {
-    margin-top: var(--s-8);
+    margin: var(--s-8) auto 0;
     display: grid; grid-template-columns: 1fr;
-    max-width: 340px;
+    max-width: 380px;
   }
   .price-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: var(--s-7);
+    text-align: center;
+    background: linear-gradient(180deg, var(--accent-soft), var(--surface) 60%);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-lg);
+    padding: var(--s-9) var(--s-7);
+    box-shadow: var(--shadow-card), 0 0 0 1px var(--accent);
   }
-  .price-card.pro { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
-  .price-card .plan-name { font-weight: 700; font-size: var(--text-lg); }
+  .price-badge {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    background: none;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius-pill);
+    padding: var(--s-2) var(--s-5);
+  }
   .price-card .plan-price {
     font-family: var(--font-display); font-weight: 400;
-    font-size: var(--text-3xl); margin-top: var(--s-3);
+    font-size: var(--text-5xl);
+    color: var(--accent-strong);
+    margin-top: var(--s-6);
   }
   .price-card .plan-price span { font-family: var(--font-body); font-size: var(--text-sm); color: var(--text-tertiary); font-weight: 400; }
-  .price-card ul { margin-top: var(--s-5); display: flex; flex-direction: column; gap: var(--s-3); }
+  .price-card .plan-name { margin-top: var(--s-2); font-weight: 700; font-size: var(--text-lg); }
+  .price-card ul {
+    margin: var(--s-6) auto 0;
+    max-width: 220px;
+    display: flex; flex-direction: column; gap: var(--s-3);
+    text-align: left;
+  }
   .price-card li { font-size: var(--text-sm); color: var(--text-secondary); padding-left: var(--s-6); position: relative; }
   .price-card li::before { content: "✓"; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
   .pricing-note { margin-top: var(--s-6); font-size: var(--text-sm); color: var(--text-tertiary); }
 
   /* ============ Closing CTA ============ */
-  .closing-cta { background: var(--surface-strong); }
+  .closing-cta { position: relative; overflow: hidden; background: var(--surface-strong); }
+  .closing-cta::before {
+    content: "";
+    position: absolute;
+    bottom: -240px; left: 50%;
+    width: 760px; height: 760px;
+    transform: translateX(-50%);
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 30%, transparent), transparent 65%);
+    filter: blur(70px);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .closing-cta .wrap { position: relative; }
   .closing-cta-inner { text-align: center; display: flex; flex-direction: column; align-items: center; }
   .closing-cta .section-title { max-width: none; }
   .closing-cta .section-lede { margin-left: auto; margin-right: auto; }
@@ -563,14 +412,22 @@
   }
   .guide-block > p.desc { margin-top: var(--s-3); color: var(--text-secondary); max-width: 62ch; }
   .guide-block-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s-4); flex-wrap: wrap; }
-  .text-toggle {
-    background: none; border: none;
-    color: var(--accent-strong);
-    font-size: var(--text-sm); font-weight: 600;
+
+  .agent-tabs { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-bottom: var(--s-4); }
+  .agent-tab {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    font-weight: 600;
+    padding: var(--s-2) var(--s-5);
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-strong);
+    background: var(--surface);
+    color: var(--text-secondary);
     cursor: pointer;
-    padding: var(--s-1) var(--s-2);
+    transition: background var(--duration-fast) ease, color var(--duration-fast) ease, border-color var(--duration-fast) ease;
   }
-  .text-toggle:hover { text-decoration: underline; }
+  .agent-tab:hover { border-color: var(--accent); color: var(--accent); }
+  .agent-tab.active { background: var(--accent); color: var(--accent-contrast); border-color: var(--accent); }
 
   .install-steps { margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-4); }
   .install-step {
@@ -590,10 +447,11 @@
 
   /* ============ Terminal-style code block ============ */
   .code-block {
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-lg);
     overflow: hidden;
     border: 1px solid var(--terminal-border);
     background: var(--terminal-bg);
+    box-shadow: var(--shadow-card);
   }
   .code-block-bar {
     display: flex; align-items: center; justify-content: space-between;
@@ -629,66 +487,6 @@
   }
   .code-line .prompt { color: var(--terminal-prompt); margin-right: var(--s-3); user-select: none; }
 
-  .caveat-list {
-    margin-top: var(--s-6);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-sm);
-    background: var(--surface);
-    overflow: hidden;
-  }
-  .caveat { border-top: 1px solid var(--border); }
-  .caveat:first-child { border-top: none; }
-  .caveat-trigger {
-    width: 100%;
-    display: flex; align-items: center; flex-wrap: wrap; row-gap: var(--s-3);
-    gap: var(--s-4);
-    padding: var(--s-5);
-    background: none; border: none;
-    text-align: left;
-    cursor: pointer;
-    color: var(--text-primary);
-  }
-  .caveat-trigger:hover { background: var(--surface-strong); }
-  .caveat-trigger .dot {
-    flex: none; width: 8px; height: 8px; border-radius: 50%;
-    background: var(--danger);
-  }
-  .caveat-trigger h4 { font-size: var(--text-md); font-weight: 600; flex: 1 1 160px; min-width: 0; }
-  .caveat-planned {
-    flex: none;
-    font-family: var(--font-mono);
-    font-size: var(--text-xs);
-    color: var(--accent-strong);
-    background: var(--accent-soft);
-    border-radius: var(--radius-pill);
-    padding: var(--s-1) var(--s-3);
-  }
-  .caveat-trigger .chevron {
-    flex: none;
-    color: var(--text-tertiary);
-    transition: transform var(--duration) ease;
-  }
-  .caveat[data-open="true"] .caveat-trigger .chevron { transform: rotate(180deg); }
-  .caveat-panel {
-    display: grid;
-    grid-template-rows: 0fr;
-    transition: grid-template-rows var(--duration) ease;
-  }
-  .caveat[data-open="true"] .caveat-panel { grid-template-rows: 1fr; }
-  .caveat-panel-inner { overflow: hidden; }
-  .caveat-panel p {
-    padding: 0 var(--s-5) var(--s-5) calc(var(--s-5) + 8px + var(--s-4));
-    color: var(--text-secondary);
-    font-size: var(--text-sm);
-  }
-  .caveat-panel .roadmap-note {
-    margin-top: var(--s-3);
-    color: var(--accent-strong);
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .caveat-panel { transition: none; }
-  }
-
   .decision-flow {
     margin-top: var(--s-6);
     display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s-5);
@@ -696,7 +494,7 @@
   @media (max-width: 720px) { .decision-flow { grid-template-columns: 1fr; } }
   .decision-flow .cell {
     padding: var(--s-5);
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius-md);
   }
   .decision-flow .cell.allow { background: var(--accent-soft); }
   .decision-flow .cell.deny { background: var(--danger-soft); }
@@ -706,6 +504,11 @@
   .decision-flow .cell.deny .k { color: var(--danger-strong); }
   .decision-flow .cell.ask .k { color: var(--text-tertiary); }
   .decision-flow .cell p { margin-top: var(--s-2); font-size: var(--text-sm); color: var(--text-secondary); }
+
+  /* ============ Advanced ============ */
+  .advanced-section { background: var(--surface-strong); }
+  .advanced-code { margin-top: var(--s-8); }
+  .advanced-note { margin-top: var(--s-6); font-size: var(--text-sm); color: var(--text-tertiary); }
 
   /* ============ Footer ============ */
   footer.site {
@@ -731,12 +534,17 @@
       </svg>
       Bumper
     </a>
-    <nav>
-      <a class="hide-mobile" href="#how">How it works</a>
-      <a class="hide-mobile" href="#agents">Agents</a>
-      <a class="hide-mobile" href="#pricing">Pricing</a>
-      <a href="#guide">Install</a>
-      <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav-menu" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="site-nav-menu">
+      <div class="nav-inner">
+        <a href="#how">How it works</a>
+        <a href="#agents">Agents</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#guide">Install</a>
+        <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
+      </div>
     </nav>
   </div>
 </header>
@@ -864,16 +672,6 @@
         </div>
         <div class="pack-card">
           <div class="tag">Asks first</div>
-          <h4>Running a script from the internet, sight unseen</h4>
-          <div class="example">curl ... | sh</div>
-        </div>
-        <div class="pack-card">
-          <div class="tag">Asks first</div>
-          <h4>Publishing your package publicly</h4>
-          <div class="example">npm publish</div>
-        </div>
-        <div class="pack-card">
-          <div class="tag">Asks first</div>
           <h4>Wiping data from a database</h4>
           <div class="example">DROP TABLE ...</div>
         </div>
@@ -891,39 +689,34 @@
     <div class="wrap">
       <span class="eyebrow">Where it works</span>
       <h2 class="section-title">One tool. Every agent you already switch between.</h2>
-      <p class="section-lede">Most safety tools protect one agent, because they'd have to be built by the same company that makes it. Bumper is wired into all four separately, through each one's own native permission system — not a bolt-on watcher hoping to catch what leaks through.</p>
+      <p class="section-lede">Most safety tools protect one agent, because they'd have to be built by the same company that makes it. Bumper is wired into all three separately, through each one's own native permission system — not a bolt-on watcher hoping to catch what leaks through.</p>
       <div class="agent-grid">
         <div class="agent-card">
+          <div class="agent-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" xmlns="http://www.w3.org/2000/svg"><path d="M4.709 15.955l4.72-2.647.08-.23-.08-.128H9.2l-.79-.048-2.698-.073-2.339-.097-2.266-.122-.571-.121L0 11.784l.055-.352.48-.321.686.06 1.52.103 2.278.158 1.652.097 2.449.255h.389l.055-.157-.134-.098-.103-.097-2.358-1.596-2.552-1.688-1.336-.972-.724-.491-.364-.462-.158-1.008.656-.722.881.06.225.061.893.686 1.908 1.476 2.491 1.833.365.304.145-.103.019-.073-.164-.274-1.355-2.446-1.446-2.49-.644-1.032-.17-.619a2.97 2.97 0 01-.104-.729L6.283.134 6.696 0l.996.134.42.364.62 1.414 1.002 2.229 1.555 3.03.456.898.243.832.091.255h.158V9.01l.128-1.706.237-2.095.23-2.695.08-.76.376-.91.747-.492.584.28.48.685-.067.444-.286 1.851-.559 2.903-.364 1.942h.212l.243-.242.985-1.306 1.652-2.064.73-.82.85-.904.547-.431h1.033l.76 1.129-.34 1.166-1.064 1.347-.881 1.142-1.264 1.7-.79 1.36.073.11.188-.02 2.856-.606 1.543-.28 1.841-.315.833.388.091.395-.328.807-1.969.486-2.309.462-3.439.813-.042.03.049.061 1.549.146.662.036h1.622l3.02.225.79.522.474.638-.079.485-1.215.62-1.64-.389-3.829-.91-1.312-.329h-.182v.11l1.093 1.068 2.006 1.81 2.509 2.33.127.578-.322.455-.34-.049-2.205-1.657-.851-.747-1.926-1.62h-.128v.17l.444.649 2.345 3.521.122 1.08-.17.353-.608.213-.668-.122-1.374-1.925-1.415-2.167-1.143-1.943-.14.08-.674 7.254-.316.37-.729.28-.607-.461-.322-.747.322-1.476.389-1.924.315-1.53.286-1.9.17-.632-.012-.042-.14.018-1.434 1.967-2.18 2.945-1.726 1.845-.414.164-.717-.37.067-.662.401-.589 2.388-3.036 1.44-1.882.93-1.086-.006-.158h-.055L4.132 18.56l-1.13.146-.487-.456.061-.746.231-.243 1.908-1.312-.006.006z" fill="#D97757" fill-rule="nonzero"/></svg>
+          </div>
           <div class="agent-card-top">
             <div class="name">Claude Code</div>
-            <span class="status-pill full"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Shipped</span>
           </div>
-          <div class="proof-line"><span class="prompt">$</span> rm -rf * <span class="arrow">→</span> <span class="blocked">blocked</span></div>
           <p>The first integration built — verified end to end before any other agent was added.</p>
         </div>
         <div class="agent-card">
+          <div class="agent-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg"><path d="M22.106 5.68L12.5.135a.998.998 0 00-.998 0L1.893 5.68a.84.84 0 00-.419.726v11.186c0 .3.16.577.42.727l9.607 5.547a.999.999 0 00.998 0l9.608-5.547a.84.84 0 00.42-.727V6.407a.84.84 0 00-.42-.726zm-.603 1.176L12.228 22.92c-.063.108-.228.064-.228-.061V12.34a.59.59 0 00-.295-.51l-9.11-5.26c-.107-.062-.063-.228.062-.228h18.55c.264 0 .428.286.296.514z"/></svg>
+          </div>
           <div class="agent-card-top">
             <div class="name">Cursor</div>
-            <span class="status-pill full"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Shipped</span>
           </div>
-          <div class="proof-line"><span class="prompt">$</span> rm -rf * <span class="arrow">→</span> <span class="blocked">blocked</span></div>
           <p>Verified against a real, signed-in Cursor account — not just Cursor's published hook schema.</p>
         </div>
         <div class="agent-card">
+          <div class="agent-mark" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" fill-rule="evenodd" xmlns="http://www.w3.org/2000/svg"><path d="M19.245 5.364c1.322 1.36 1.877 3.216 2.11 5.817.622 0 1.2.135 1.592.654l.73.964c.21.278.323.61.323.955v2.62c0 .339-.173.669-.453.868C20.239 19.602 16.157 21.5 12 21.5c-4.6 0-9.205-2.583-11.547-4.258-.28-.2-.452-.53-.453-.868v-2.62c0-.345.113-.679.321-.956l.73-.963c.392-.517.974-.654 1.593-.654l.029-.297c.25-2.446.81-4.213 2.082-5.52 2.461-2.54 5.71-2.851 7.146-2.864h.198c1.436.013 4.685.323 7.146 2.864zm-7.244 4.328c-.284 0-.613.016-.962.05-.123.447-.305.85-.57 1.108-1.05 1.023-2.316 1.18-2.994 1.18-.638 0-1.306-.13-1.851-.464-.516.165-1.012.403-1.044.996a65.882 65.882 0 00-.063 2.884l-.002.48c-.002.563-.005 1.126-.013 1.69.002.326.204.63.51.765 2.482 1.102 4.83 1.657 6.99 1.657 2.156 0 4.504-.555 6.985-1.657a.854.854 0 00.51-.766c.03-1.682.006-3.372-.076-5.053-.031-.596-.528-.83-1.046-.996-.546.333-1.212.464-1.85.464-.677 0-1.942-.157-2.993-1.18-.266-.258-.447-.661-.57-1.108-.32-.032-.64-.049-.96-.05zm-2.525 4.013c.539 0 .976.426.976.95v1.753c0 .525-.437.95-.976.95a.964.964 0 01-.976-.95v-1.752c0-.525.437-.951.976-.951zm5 0c.539 0 .976.426.976.95v1.753c0 .525-.437.95-.976.95a.964.964 0 01-.976-.95v-1.752c0-.525.437-.951.976-.951zM7.635 5.087c-1.05.102-1.935.438-2.385.906-.975 1.037-.765 3.668-.21 4.224.405.394 1.17.657 1.995.657h.09c.649-.013 1.785-.176 2.73-1.11.435-.41.705-1.433.675-2.47-.03-.834-.27-1.52-.63-1.813-.39-.336-1.275-.482-2.265-.394zm6.465.394c-.36.292-.6.98-.63 1.813-.03 1.037.24 2.06.675 2.47.968.957 2.136 1.104 2.776 1.11h.044c.825 0 1.59-.263 1.995-.657.555-.556.765-3.187-.21-4.224-.45-.468-1.335-.804-2.385-.906-.99-.088-1.875.058-2.265.394zM12 7.615c-.24 0-.525.015-.84.044.03.16.045.336.06.526l-.001.159a2.94 2.94 0 01-.014.25c.225-.022.425-.027.612-.028h.366c.187 0 .387.006.612.028-.015-.146-.015-.277-.015-.409.015-.19.03-.365.06-.526a9.29 9.29 0 00-.84-.044z"/></svg>
+          </div>
           <div class="agent-card-top">
             <div class="name">Copilot CLI</div>
-            <span class="status-pill full"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8.5l3.2 3.2L13 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Shipped</span>
           </div>
-          <div class="proof-line"><span class="prompt">$</span> rm -rf * <span class="arrow">→</span> <span class="blocked">blocked</span></div>
           <p>Verified against a real, GitHub-authenticated Copilot session, not a simulated one.</p>
-        </div>
-        <div class="agent-card muted">
-          <div class="agent-card-top">
-            <div class="name">Codex CLI</div>
-            <span class="status-pill limited">Partial support</span>
-          </div>
-          <div class="proof-line"><span class="prompt">$</span> rm -rf * <span class="arrow">→</span> <span class="asks">Codex's own prompt asks</span></div>
-          <p>Codex CLI has no live hook to plug into yet, so Bumper can't add its plain-English layer here — but it still turns on Codex's built-in approval prompt.</p>
         </div>
       </div>
     </div>
@@ -931,14 +724,15 @@
 
   <!-- ============ Pricing ============ -->
   <section id="pricing">
-    <div class="wrap">
+    <div class="wrap pricing-wrap">
       <span class="eyebrow">Pricing</span>
       <h2 class="section-title">Free during early access.</h2>
       <p class="section-lede">Sign in with your email — a code, no password to remember — and everything's unlimited while this is early. Real pricing comes later, set from how people actually use Bumper instead of a guess.</p>
       <div class="pricing-grid">
         <div class="price-card pro">
-          <div class="plan-name">Early access</div>
+          <span class="price-badge">Free — early access</span>
           <div class="plan-price">$0</div>
+          <div class="plan-name">Everything unlocked, no catch</div>
           <ul>
             <li>Every agent, every rule</li>
             <li>Unlimited ask-decisions</li>
@@ -958,7 +752,7 @@
 
       <div class="guide-block">
         <h3>Install</h3>
-        <p class="desc">Same three commands regardless of which agent you use. Run the install once per project (or add <code class="mono">--global</code> to cover every project on the machine).</p>
+        <p class="desc">Same two commands regardless of which agent you use. Run the install once per project (or add <code class="mono">--global</code> to cover every project on the machine).</p>
         <div class="install-steps">
           <div class="install-step">
             <span class="n">1</span>
@@ -973,25 +767,27 @@
                   <div class="code-line"><span class="prompt">$</span>bumper start</div>
                 </div>
               </div>
-              <div class="note">Starts the local daemon and the approval inbox at localhost:4790. Leave this running in the background.</div>
+              <div class="note">Starts the local daemon — leave it running in the background. Don't want to remember? Run <code class="mono">bumper autostart enable</code> once and it starts itself on login.</div>
             </div>
           </div>
           <div class="install-step">
             <span class="n">2</span>
             <div>
+              <div class="agent-tabs" role="tablist" aria-label="Choose your agent">
+                <button type="button" class="agent-tab active" data-agent="claude-code" role="tab" aria-selected="true">Claude Code</button>
+                <button type="button" class="agent-tab" data-agent="cursor" role="tab" aria-selected="false">Cursor</button>
+                <button type="button" class="agent-tab" data-agent="copilot" role="tab" aria-selected="false">Copilot CLI</button>
+              </div>
               <div class="code-block">
                 <div class="code-block-bar">
                   <span class="code-block-dots" aria-hidden="true"><span></span><span></span><span></span></span>
                   <button type="button" class="code-block-copy" data-copy-target>Copy</button>
                 </div>
                 <div class="code-block-body">
-                  <div class="code-line"><span class="prompt">$</span>bumper install claude-code</div>
-                  <div class="code-line"><span class="prompt">$</span>bumper install cursor</div>
-                  <div class="code-line"><span class="prompt">$</span>bumper install copilot</div>
-                  <div class="code-line"><span class="prompt">$</span>bumper install codex</div>
+                  <div class="code-line"><span class="prompt">$</span><span id="agent-install-cmd">bumper install claude-code</span></div>
                 </div>
               </div>
-              <div class="note">Run whichever of these match your agent — or <code class="mono">bumper install all</code> to wire in every one at once.</div>
+              <div class="note">Using more than one agent? Run <code class="mono">bumper install all</code> to wire in every supported agent at once.</div>
             </div>
           </div>
           <div class="install-step">
@@ -1027,61 +823,34 @@
           </div>
           <div class="cell ask">
             <div class="k">Ask</div>
-            <p>Genuinely unclear — pauses your agent and waits up to 90 seconds for your decision. No answer in time, and it plays it safe and says no.</p>
+            <p>Genuinely unclear — your agent pauses and shows Bumper's plain-English explanation right there in its own native permission prompt, waiting for your yes or no.</p>
           </div>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="guide-block">
-        <div class="guide-block-head">
-          <h3>What to be aware of</h3>
-          <button type="button" class="text-toggle" id="caveat-toggle-all">Expand all</button>
+  <!-- ============ Advanced: custom rules ============ -->
+  <section id="advanced" class="advanced-section">
+    <div class="wrap">
+      <span class="eyebrow">Advanced</span>
+      <h2 class="section-title">Restrict something Bumper doesn't already catch.</h2>
+      <p class="section-lede">For anyone who wants to go beyond the built-in danger pack — every project has its own risky command. Drop a <code class="mono">bumper.policy.yaml</code> in your project root (or <code class="mono">~/.bumper/policy.yaml</code> for every project) and Bumper checks it first. Your rules add to the 50+ built-in ones — they never replace them.</p>
+      <div class="code-block advanced-code">
+        <div class="code-block-bar">
+          <span class="code-block-dots" aria-hidden="true"><span></span><span></span><span></span></span>
+          <button type="button" class="code-block-copy" data-copy-target>Copy</button>
         </div>
-        <p class="desc">Honest limitations, not fine print — and where we already know the fix.</p>
-        <div class="caveat-list" id="caveat-list">
-          <div class="caveat" data-open="true">
-            <button type="button" class="caveat-trigger" aria-expanded="true" aria-controls="caveat-panel-1">
-              <span class="dot" aria-hidden="true"></span>
-              <h4>Protection depends on the daemon actually running</h4>
-              <span class="caveat-planned">Fixed: auto-start</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="caveat-panel" id="caveat-panel-1">
-              <div class="caveat-panel-inner">
-                <p>If <code class="mono">bumper start</code> isn't running, hooks fail <em>open</em> — your agent's actions go through unchecked rather than getting stuck. Bumper protects you when it's on, not when it's forgotten.
-                <span class="roadmap-note">Fixed: <code class="mono">bumper autostart enable</code> runs the daemon automatically on login (Startup folder on Windows, a launchd LaunchAgent on macOS, a systemd user service on Linux) — one command, no more remembering.</span></p>
-              </div>
-            </div>
-          </div>
-          <div class="caveat" data-open="false">
-            <button type="button" class="caveat-trigger" aria-expanded="false" aria-controls="caveat-panel-2">
-              <span class="dot" aria-hidden="true"></span>
-              <h4>Codex CLI has no live hook yet</h4>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="caveat-panel" id="caveat-panel-2">
-              <div class="caveat-panel-inner">
-                <p>Codex CLI doesn't currently expose a way for an outside tool to pause and ask before it acts. Bumper falls back to a static rule file and turns on Codex's own built-in approval prompt — real protection, just not the same plain-English experience you get everywhere else.
-                <span class="roadmap-note">We're watching Codex CLI for a live hook and will wire it in the moment one exists — this one isn't Bumper's call to make alone.</span></p>
-              </div>
-            </div>
-          </div>
-          <div class="caveat" data-open="false">
-            <button type="button" class="caveat-trigger" aria-expanded="false" aria-controls="caveat-panel-3">
-              <span class="dot" aria-hidden="true"></span>
-              <h4>Copilot CLI's hook format could change</h4>
-              <span class="caveat-planned">Fixed: version pinning</span>
-              <svg class="chevron" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 6l4 4 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            </button>
-            <div class="caveat-panel" id="caveat-panel-3">
-              <div class="caveat-panel-inner">
-                <p>We tested this against a real, current install of GitHub's Copilot CLI and it works — but Copilot CLI is young and its hook schema isn't officially locked down yet, so a future update could require an adjustment.
-                <span class="roadmap-note">Fixed: every <code class="mono">bumper install copilot</code> now checks the installed Copilot CLI version against the one actually tested, and warns you the moment it drifts — instead of quietly breaking.</span></p>
-              </div>
-            </div>
-          </div>
+        <div class="code-block-body">
+          <div class="code-line">rules:</div>
+          <div class="code-line">  - id: block-prod-migration</div>
+          <div class="code-line">    match:</div>
+          <div class="code-line">      command: "*prisma migrate deploy*"</div>
+          <div class="code-line">    decision: ask</div>
+          <div class="code-line">    explain: "This runs a database migration against production."</div>
         </div>
       </div>
+      <p class="advanced-note">Match on <code class="mono">command</code> (glob), <code class="mono">file</code> (glob), or <code class="mono">content_pattern</code> (regex against code being written) — set <code class="mono">decision</code> to <code class="mono">allow</code>, <code class="mono">deny</code>, or <code class="mono">ask</code>, and either write <code class="mono">explain</code> yourself or reuse a built-in <code class="mono">category</code> (like <code class="mono">recursive-delete</code> or <code class="mono">secret-write</code>) to skip writing the sentence. Full reference: <a class="inline-link" href="https://github.com/BadrChoujai/bumper/blob/master/bumper.policy.example.yaml" rel="noopener">bumper.policy.example.yaml</a>.</p>
     </div>
   </section>
 
@@ -1111,7 +880,7 @@
 
 <footer class="site">
   <div class="wrap footer-row">
-    <span class="footer-note">Free during early access — sign in with your email, no password.</span>
+    <span class="footer-note">Enjoy the free early access.</span>
     <div class="footer-links">
       <a href="#top">Back to top</a>
       <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
@@ -1119,6 +888,7 @@
   </div>
 </footer>
 
+<script src="nav.js"></script>
 <script>
 (function () {
   var scenarios = [
@@ -1216,7 +986,7 @@
     hint.style.color = "var(--text-tertiary)";
     hint.style.fontSize = "var(--text-sm)";
     hint.style.marginTop = "var(--s-2)";
-    hint.textContent = "This is exactly what you'd see in the real approval inbox.";
+    hint.textContent = "This is exactly what you'd see in your agent's own permission prompt.";
     stage.appendChild(hint);
   }
 
@@ -1284,28 +1054,24 @@
     }, 2200);
   })();
 
-  // ---- "What to be aware of" accordion ----
-  var caveats = Array.prototype.slice.call(document.querySelectorAll("#caveat-list .caveat"));
-
-  function setCaveatOpen(caveat, open) {
-    var trigger = caveat.querySelector(".caveat-trigger");
-    caveat.setAttribute("data-open", open ? "true" : "false");
-    trigger.setAttribute("aria-expanded", open ? "true" : "false");
-  }
-
-  caveats.forEach(function (caveat) {
-    var trigger = caveat.querySelector(".caveat-trigger");
-    trigger.addEventListener("click", function () {
-      var isOpen = caveat.getAttribute("data-open") === "true";
-      setCaveatOpen(caveat, !isOpen);
+  // ---- Per-agent install command tabs ----
+  var AGENT_INSTALL_COMMANDS = {
+    "claude-code": "bumper install claude-code",
+    cursor: "bumper install cursor",
+    copilot: "bumper install copilot"
+  };
+  var agentTabs = Array.prototype.slice.call(document.querySelectorAll(".agent-tab"));
+  var agentCmdEl = document.getElementById("agent-install-cmd");
+  agentTabs.forEach(function (tab) {
+    tab.addEventListener("click", function () {
+      agentTabs.forEach(function (t) {
+        t.classList.remove("active");
+        t.setAttribute("aria-selected", "false");
+      });
+      tab.classList.add("active");
+      tab.setAttribute("aria-selected", "true");
+      if (agentCmdEl) agentCmdEl.textContent = AGENT_INSTALL_COMMANDS[tab.dataset.agent];
     });
-  });
-
-  var toggleAllBtn = document.getElementById("caveat-toggle-all");
-  toggleAllBtn.addEventListener("click", function () {
-    var anyClosed = caveats.some(function (c) { return c.getAttribute("data-open") !== "true"; });
-    caveats.forEach(function (c) { setCaveatOpen(c, anyClosed); });
-    toggleAllBtn.textContent = anyClosed ? "Collapse all" : "Expand all";
   });
 })();
 </script>

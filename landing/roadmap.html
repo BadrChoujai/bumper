@@ -5,129 +5,23 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700;800&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
 
 <style>
-  :root {
-    --ground: #f6f7f5;
-    --surface: #ffffff;
-    --surface-strong: #edf1ea;
-    --border: #dde2d8;
-    --border-strong: #c7cec0;
-    --text-primary: #16201a;
-    --text-secondary: #4c5347;
-    --text-tertiary: #5c6355;
-    --accent: #226e46;
-    --accent-strong: #185536;
-    --accent-bright: #2f8f5b;
-    --accent-soft: #e3f1e8;
-    --accent-contrast: #ffffff;
-    --danger: #a94a3b;
-    --danger-strong: #833a2d;
-    --danger-bright: #c85c4a;
-    --danger-soft: #fbe9e5;
-    --danger-contrast: #ffffff;
-    --focus-ring: #226e46;
-
-    --font-display: 'Instrument Serif', Georgia, serif;
-    --font-body: 'Manrope', 'Manrope Fallback', system-ui, sans-serif;
-    --font-mono: 'Geist Mono', 'Geist Mono Fallback', ui-monospace, monospace;
-
-    --s-1: 4px; --s-2: 6px; --s-3: 8px; --s-4: 10px; --s-5: 12px;
-    --s-6: 14px; --s-7: 16px; --s-8: 20px; --s-9: 40px;
-
-    --text-2xs: 10.5px; --text-xs: 12px; --text-sm: 14px; --text-md: 15px; --text-lg: 16px;
-    --text-xl: 18px; --text-2xl: 20px; --text-3xl: 26px; --text-4xl: 44px;
-
-    --radius-xs: 5px; --radius-sm: 8px; --radius-pill: 999px;
-    --duration: 150ms;
-    --duration-fast: 180ms;
-    --duration-normal: 200ms;
-    --duration-slow: 350ms;
-
-    --shadow-inset-2:
-      inset 0 1px 0 0 rgba(255,255,255,0.22),
-      inset 0 -1px 0 0 rgba(0,0,0,0.18),
-      0 1px 2px 0 rgba(0,0,0,0.35);
-
-    --terminal-bg: #10140f;
-    --terminal-surface: #171d13;
-    --terminal-text: #e7ece3;
-    --terminal-muted: #7c8674;
-    --terminal-prompt: #6bcf98;
-    --terminal-border: #262d1f;
-
-    color-scheme: light;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ground: #0a130e; --surface: #0f1a14; --surface-strong: #16241b;
-      --border: #24352a; --border-strong: #33472f;
-      --text-primary: #edf3ec; --text-secondary: #a9b6a1; --text-tertiary: #77876f;
-      --accent: #4bb37c; --accent-strong: #6bcf98; --accent-bright: #4bb37c;
-      --accent-soft: #16301f; --accent-contrast: #06170e;
-      --danger: #e0836a; --danger-strong: #f0a488; --danger-bright: #e0836a;
-      --danger-soft: #351b13; --danger-contrast: #1a0906;
-      --focus-ring: #6bcf98;
-      color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --ground: #0a130e; --surface: #0f1a14; --surface-strong: #16241b;
-    --border: #24352a; --border-strong: #33472f;
-    --text-primary: #edf3ec; --text-secondary: #a9b6a1; --text-tertiary: #77876f;
-    --accent: #4bb37c; --accent-strong: #6bcf98; --accent-bright: #4bb37c;
-    --accent-soft: #16301f; --accent-contrast: #06170e;
-    --danger: #e0836a; --danger-strong: #f0a488; --danger-bright: #e0836a;
-    --danger-soft: #351b13; --danger-contrast: #1a0906;
-    --focus-ring: #6bcf98;
-    color-scheme: dark;
-  }
-
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    background: var(--ground);
-    color: var(--text-primary);
-    font-family: var(--font-body);
-    font-size: var(--text-md);
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-  a { color: inherit; }
-  h1, h2, h3, p { margin: 0; }
-  ul { margin: 0; padding: 0; list-style: none; }
-  code, .mono { font-family: var(--font-mono); }
-  html { scroll-behavior: smooth; }
-  :focus-visible { outline: 2px solid var(--focus-ring); outline-offset: 2px; border-radius: 4px; }
-  @media (prefers-reduced-motion: reduce) {
-    * { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
-    html { scroll-behavior: auto; }
-  }
-
-  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--s-7); }
-  @media (max-width: 640px) { .wrap { padding: 0 var(--s-5); } }
-
-  /* ---- header (matches the main site) ---- */
-  header.site {
-    position: sticky; top: 0; z-index: 20;
-    background: color-mix(in srgb, var(--ground) 88%, transparent);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid var(--border);
-  }
-  .site-nav { display: flex; align-items: center; justify-content: space-between; padding: var(--s-5) 0; }
-  .wordmark { display: flex; align-items: center; gap: var(--s-3); font-family: var(--font-body); font-weight: 800; font-size: var(--text-xl); text-decoration: none; color: var(--text-primary); }
-  .wordmark .mark { width: 26px; height: 26px; display: block; }
-  .site-nav nav { display: flex; gap: var(--s-7); align-items: center; }
-  .site-nav nav a { text-decoration: none; color: var(--text-secondary); font-size: var(--text-sm); font-weight: 500; }
-  .site-nav nav a:hover { color: var(--text-primary); }
-
   /* ---- wiki page frame ---- */
-  .page-head { padding: var(--s-9) 0 var(--s-7); border-bottom: 1px solid var(--border); }
-  .eyebrow {
-    font-family: var(--font-mono); font-size: var(--text-2xs); font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--accent-strong); display: inline-flex; align-items: center; gap: var(--s-3);
+  .page-head { position: relative; overflow: hidden; padding: var(--s-9) 0 var(--s-7); border-bottom: 1px solid var(--border); }
+  .page-head::before {
+    content: "";
+    position: absolute;
+    top: -220px; left: 15%;
+    width: 640px; height: 640px;
+    background: radial-gradient(circle, color-mix(in srgb, var(--accent) 30%, transparent), transparent 62%);
+    filter: blur(70px);
+    opacity: 0.6;
+    pointer-events: none;
+    z-index: -1;
   }
-  .eyebrow::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); }
+  .page-head .wrap { position: relative; }
   .page-title { font-family: var(--font-display); font-weight: 400; font-size: var(--text-4xl); line-height: 1.15; letter-spacing: -0.015em; margin-top: var(--s-4); }
   .page-sub { margin-top: var(--s-4); color: var(--text-secondary); max-width: 62ch; }
   .last-verified { margin-top: var(--s-5); font-size: var(--text-xs); color: var(--text-tertiary); font-family: var(--font-mono); }
@@ -150,7 +44,7 @@
   .wiki-section .lede { margin-top: var(--s-3); color: var(--text-secondary); max-width: 62ch; }
 
   /* ---- status legend ---- */
-  .legend { display: flex; flex-wrap: wrap; gap: var(--s-5); margin-top: var(--s-6); padding: var(--s-4) var(--s-5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .legend { display: flex; flex-wrap: wrap; gap: var(--s-5); margin-top: var(--s-6); padding: var(--s-4) var(--s-5); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-md); box-shadow: var(--shadow-card); }
   .legend-item { display: flex; align-items: center; gap: var(--s-2); font-size: var(--text-xs); color: var(--text-secondary); }
 
   /* ---- status pills (shared) ---- */
@@ -162,7 +56,7 @@
   .pill.done { background: var(--accent-soft); color: var(--accent-strong); }
 
   /* ---- generic wiki table ---- */
-  .wiki-table-wrap { margin-top: var(--s-6); overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); }
+  .wiki-table-wrap { margin-top: var(--s-6); overflow-x: auto; border: 1px solid var(--border); border-radius: var(--radius-lg); box-shadow: var(--shadow-card); }
   table.wiki-table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); background: var(--surface); }
   table.wiki-table th, table.wiki-table td { text-align: left; padding: var(--s-4) var(--s-5); vertical-align: top; }
   table.wiki-table thead th {
@@ -172,13 +66,14 @@
   table.wiki-table tbody tr + tr { border-top: 1px solid var(--border); }
   table.wiki-table td.agent-name { font-weight: 700; font-family: var(--font-body); white-space: nowrap; }
   table.wiki-table td .detail { display: block; margin-top: var(--s-2); color: var(--text-tertiary); font-size: var(--text-xs); }
-  table.wiki-table code { font-size: var(--text-xs); background: var(--surface-strong); padding: 2px var(--s-2); border-radius: 4px; }
+  table.wiki-table code { font-size: var(--text-xs); background: var(--surface-strong); padding: 2px var(--s-2); border-radius: var(--radius-xs); }
 
   /* ---- pricing phase cards ---- */
   .phase-list { margin-top: var(--s-6); display: flex; flex-direction: column; gap: var(--s-5); }
   .phase {
     display: grid; grid-template-columns: 140px 1fr; gap: var(--s-6);
-    padding: var(--s-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm);
+    padding: var(--s-6); background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
   }
   @media (max-width: 640px) { .phase { grid-template-columns: 1fr; gap: var(--s-3); } }
   .phase-tag { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.05em; }
@@ -205,7 +100,7 @@
   @media (max-width: 560px) { .changelog-entry { grid-template-columns: 1fr; gap: var(--s-2); } }
   .changelog-date { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-tertiary); padding-top: 2px; }
   .changelog-body p { color: var(--text-secondary); font-size: var(--text-sm); }
-  .changelog-body .cmd { display: inline-block; margin-top: var(--s-2); font-family: var(--font-mono); font-size: var(--text-xs); background: var(--terminal-bg); color: var(--terminal-text); padding: var(--s-2) var(--s-3); border-radius: 4px; }
+  .changelog-body .cmd { display: inline-block; margin-top: var(--s-2); font-family: var(--font-mono); font-size: var(--text-xs); background: var(--terminal-bg); color: var(--terminal-text); padding: var(--s-2) var(--s-3); border-radius: var(--radius-xs); }
 
   footer.site { padding: var(--s-9) 0; border-top: 1px solid var(--border); }
   .footer-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--s-5); }
@@ -225,10 +120,15 @@
       </svg>
       Bumper
     </a>
-    <nav>
-      <a href="/">Site</a>
-      <a href="/#guide">Install</a>
-      <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
+    <button type="button" class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="site-nav-menu" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+    <nav id="site-nav-menu">
+      <div class="nav-inner">
+        <a href="/">Site</a>
+        <a href="/#guide">Install</a>
+        <a href="https://github.com/BadrChoujai/bumper" rel="noopener">GitHub</a>
+      </div>
     </nav>
   </div>
 </header>
@@ -487,3 +387,5 @@
     </div>
   </div>
 </footer>
+
+<script src="nav.js"></script>
