@@ -1,5 +1,7 @@
 # Bumper
 
+> **⚠️ Beta** — Early access. May have bugs. Feature-complete and production-ready for most use cases, but please report issues.
+
 A plain-language safety net for vibe coders.
 
 Bumper pauses risky things your AI assistant (Claude Code, Cursor, Copilot CLI, or Codex CLI) is about to do, explains what's about to happen in a sentence you'd actually understand, and waits for you to say yes or no.

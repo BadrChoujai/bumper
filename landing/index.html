@@ -97,6 +97,7 @@
   @media (prefers-reduced-motion: reduce) {
     h1.hero-title em { transition: none; }
   }
+  .beta-badge { display: inline-block; padding: var(--s-2) var(--s-4); background: var(--surface-strong); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: var(--s-4); }
   .hero-sub { font-size: var(--text-lg); line-height: 1.6; color: var(--text-secondary); max-width: 44ch; }
   .hero-actions { display: flex; flex-wrap: wrap; gap: var(--s-4); align-items: center; justify-content: center; }
   @media (max-width: 560px) {
@@ -553,6 +554,7 @@
   <!-- ============ Hero ============ -->
   <section class="hero">
     <div class="wrap hero-inner">
+      <span class="beta-badge">⚠️ Beta — May have bugs</span>
       <h1 class="hero-title">Your AI is about to do something<br><em id="risky-word">risky</em></h1>
       <p class="hero-sub">Bumper pauses it, explains what's about to happen in plain English, and waits for you to say yes or no.</p>
       <div class="hero-actions">
