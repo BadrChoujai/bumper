@@ -26,7 +26,7 @@ bumper install cursor
 bumper install copilot
 ```
 
-Or install into all three at once with `bumper install all`. Add `--global` to any install command to protect every project on the machine instead of just the current one.
+Or install into all of them at once with `bumper install all` (this also wires in Codex CLI — see [Agent support](#agent-support), it has no live hook yet so it falls back to a static rule file). Add `--global` to any install command to protect every project on the machine instead of just the current one.
 
 ## What it actually checks
 
@@ -69,6 +69,7 @@ bumper mcp              # run as an MCP server (stdio) — fallback for agents w
 | Claude Code | Live-tested | `PreToolUse` hook, `.claude/settings.json` |
 | Cursor | Live-tested | `beforeShellExecution` / `beforeMCPExecution`, `.cursor/hooks.json` |
 | Copilot CLI | Live-tested | `preToolUse` hook; installed-version checked against the one actually tested, warns on drift |
+| Codex CLI | Partial | No live hook exists in Codex CLI yet — falls back to a static `execpolicy` rule file plus Codex's own built-in approval prompt |
 
 ## Important note
 
