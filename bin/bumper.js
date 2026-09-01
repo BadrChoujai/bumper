@@ -9,7 +9,7 @@ function prompt(question) {
 }
 
 const program = new Command();
-program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.10");
+program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.11");
 
 program
   .command("start")
@@ -41,8 +41,12 @@ program
     console.log("updating (npm install -g bumper-guard)...");
     const { spawnSync, spawn } = require("child_process");
     const npmCmd = process.platform === "win32" ? "npm.cmd" : "npm";
-    const result = spawnSync(npmCmd, ["install", "-g", "bumper-guard"], { stdio: "inherit" });
-    if (result.status !== 0) {
+    const result = spawnSync(npmCmd, ["install", "-g", "bumper-guard"], {
+      stdio: "inherit",
+      shell: process.platform === "win32",
+    });
+    if (result.error || result.status !== 0) {
+      if (result.error) console.error(result.error.message);
       console.error("update failed — run `bumper start` yourself once you've sorted it out.");
       process.exitCode = 1;
       return;
