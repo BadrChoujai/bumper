@@ -111,7 +111,7 @@ async function checkAuth() {
   try {
     const res = await fetch(`${serverUrl()}/auth/session`, {
       headers: { authorization: `Bearer ${config.token}` },
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(8000),
     });
     if (res.status === 401) {
       authCache = { authenticated: false, reason: "invalid_session" };
@@ -142,7 +142,7 @@ async function consumeAsk() {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ deviceId }),
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(6000),
     });
     if (!res.ok) return { allowed: true, unlimited: true, degraded: true };
     return await res.json();
@@ -167,7 +167,7 @@ async function getAccount({ fresh } = {}) {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ deviceId }),
-      signal: AbortSignal.timeout(3000),
+      signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) throw new Error(`status ${res.status}`);
     accountCache = await res.json();
