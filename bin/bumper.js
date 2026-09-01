@@ -9,7 +9,7 @@ function prompt(question) {
 }
 
 const program = new Command();
-program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.12");
+program.name("bumper").description("A plain-language safety net for vibe coders.").version("0.2.13");
 
 program
   .command("start")
@@ -60,7 +60,7 @@ program
 
 program
   .command("install <agent>")
-  .description("wire bumper into an agent's hooks (claude-code | cursor | copilot | codex | all)")
+  .description("wire bumper into an agent's hooks (claude-code | cursor | copilot | all)")
   .option("-g, --global", "install for all projects (user-level) instead of just this one", false)
   .action((agent, opts) => {
     const cwd = process.cwd();
@@ -68,7 +68,6 @@ program
       "claude-code": require("../src/installers/claude-code"),
       cursor: require("../src/installers/cursor"),
       copilot: require("../src/installers/copilot"),
-      codex: require("../src/installers/codex"),
     };
 
     const targets = agent === "all" ? Object.keys(installers) : [agent];

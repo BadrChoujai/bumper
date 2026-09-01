@@ -237,12 +237,6 @@
                 <td><code>preToolUse</code> hook, <code>.github/hooks/*.json</code> or <code>~/.copilot/hooks/*.json</code><span class="detail">camelCase stdin (<code>toolName</code>, <code>toolArgs</code>) — corrected after inspecting the real CLI's source, the generic docs described a different SDK's shape</span></td>
                 <td>Real, GitHub-authenticated <code>@github/copilot</code> session ran <code>rm -rf *</code> → denied automatically.</td>
               </tr>
-              <tr>
-                <td class="agent-name">Codex CLI</td>
-                <td><span class="pill partial">Partial</span></td>
-                <td>No live external-callout hook exists yet<span class="detail">Falls back to static <code>execpolicy</code> rules + Codex's own <code>approval_policy</code> prompt</span></td>
-                <td><span class="pill watching">Watching</span> for Codex CLI to expose a live hook — not something Bumper can build around on its own.</td>
-              </tr>
             </tbody>
           </table>
         </div>
@@ -261,11 +255,6 @@
                 <td class="agent-name">Protection needs the daemon running</td>
                 <td><span class="pill done">Fixed</span></td>
                 <td>Hooks fail <em>open</em> if <code>bumper start</code> isn't running — actions go through unchecked rather than getting stuck. Fixed: <code>bumper autostart enable</code> runs the daemon automatically on login (Startup folder on Windows, launchd on macOS, systemd on Linux — the Windows path is live-tested, macOS/Linux are implemented the same way but not yet run-tested on those platforms).</td>
-              </tr>
-              <tr>
-                <td class="agent-name">Codex CLI has no live hook</td>
-                <td><span class="pill watching">Watching</span></td>
-                <td>Real parity gap. Bumper will wire in a live integration the moment Codex CLI exposes one — this depends on OpenAI's roadmap, not Bumper's.</td>
               </tr>
               <tr>
                 <td class="agent-name">Copilot CLI's schema isn't locked down</td>

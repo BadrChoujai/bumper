@@ -1,7 +1,7 @@
 {
   "name": "bumper-guard",
-  "version": "0.2.12",
-  "description": "A plain-language safety net for vibe coders. Pauses risky things your AI assistant (Claude Code, Cursor, Codex CLI, Copilot CLI) is about to do, explains them in plain English, and lets you decide.",
+  "version": "0.2.13",
+  "description": "A plain-language safety net for vibe coders. Pauses risky things your AI assistant (Claude Code, Cursor, Copilot CLI) is about to do, explains them in plain English, and lets you decide.",
   "bin": {
     "bumper": "bin/bumper.js"
   },

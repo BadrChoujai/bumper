@@ -12,7 +12,6 @@ const AGENT_MARKERS = {
   "claude-code": path.join(os.homedir(), ".claude"),
   cursor: path.join(os.homedir(), ".cursor"),
   copilot: path.join(os.homedir(), ".copilot"),
-  codex: path.join(os.homedir(), ".codex"),
 };
 
 function detectAgents() {
