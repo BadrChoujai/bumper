@@ -4,7 +4,7 @@
 
 A plain-language safety net for vibe coders.
 
-Bumper pauses risky things your AI assistant (Claude Code, Cursor, Copilot CLI, or Codex CLI) is about to do, explains what's about to happen in a sentence you'd actually understand, and waits for you to say yes or no.
+Bumper pauses risky things your AI assistant (Claude Code, Cursor, or Copilot CLI) is about to do, explains what's about to happen in a sentence you'd actually understand, and waits for you to say yes or no.
 
 It works by wiring into each agent's own native permission system — the same mechanism that already asks "run this command?" — not a separate app watching from the outside.
 
@@ -24,10 +24,9 @@ Then wire it into whichever agent(s) you use:
 bumper install claude-code
 bumper install cursor
 bumper install copilot
-bumper install codex
 ```
 
-Or install into all four at once with `bumper install all`. Add `--global` to any install command to protect every project on the machine instead of just the current one.
+Or install into all three at once with `bumper install all`. Add `--global` to any install command to protect every project on the machine instead of just the current one.
 
 ## What it actually checks
 
@@ -44,9 +43,7 @@ A default "danger pack" ships out of the box — 50+ rules, covering every categ
 | Public releases, hard to fully undo | `npm publish`, `npm unpublish`, `gh release delete` | Asks first |
 | Live secrets landing in code | Stripe, AWS, GitHub, Google, Slack keys, private key blocks, or a write to `.env`/`.env.local`/`.env.production` | Asks first |
 
-Copy `bumper.policy.example.yaml` to add your own rules on top of this — it doesn't replace the built-in pack, only extends it.
-
-Copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~/.bumper/policy.yaml` for every project) to add your own rules. See the file for the format — `match` on `command` (glob), `file` (glob), or `content_pattern` (regex against code being written), a `decision` of `allow`/`deny`/`ask`, and either an `explain` string in plain English or a built-in `category` (`recursive-delete`, `force-push`, `unpublish`, `env-write`, `secret-write`) that supplies the wording for you. Rules with neither still get a plain, honest fallback message instead of silence.
+To add your own rules on top of the built-in pack (without replacing it), copy `bumper.policy.example.yaml` to `bumper.policy.yaml` in your project (or `~/.bumper/policy.yaml` for every project). See the file for the format — `match` on `command` (glob), `file` (glob), or `content_pattern` (regex against code being written), a `decision` of `allow`/`deny`/`ask`, and either an `explain` string in plain English or a built-in `category` (`recursive-delete`, `force-push`, `unpublish`, `env-write`, `secret-write`) that supplies the wording for you. Rules with neither still get a plain, honest fallback message instead of silence.
 
 ## How a decision gets made
 
@@ -72,14 +69,10 @@ bumper mcp              # run as an MCP server (stdio) — fallback for agents w
 | Claude Code | Live-tested | `PreToolUse` hook, `.claude/settings.json` |
 | Cursor | Live-tested | `beforeShellExecution` / `beforeMCPExecution`, `.cursor/hooks.json` |
 | Copilot CLI | Live-tested | `preToolUse` hook; installed-version checked against the one actually tested, warns on drift |
-| Codex CLI | Partial | No live hook exists in Codex CLI yet — falls back to a static `execpolicy` rule file plus Codex's own built-in approval prompt |
 
-## What to be aware of
+## Important note
 
-- **Protection depends on the daemon running.** If `bumper start` isn't running, hooks fail *open* — actions go through unchecked rather than getting stuck. `bumper autostart enable` fixes this by starting the daemon automatically on login (Startup folder on Windows, launchd on macOS, systemd on Linux — Windows is live-tested, macOS/Linux are implemented the same way but not yet run-tested).
-- **Codex CLI has no live hook.** Real parity gap, not something Bumper can fix alone — depends on Codex CLI exposing one.
-- **Copilot CLI's hook schema isn't locked down upstream.** Verified against a real install, but a future Copilot CLI update could change it. `bumper install copilot` checks the installed version and warns if it's drifted from the one last verified.
-- **Only the unmatched-fallback ask stands down in an auto/bypass mode** (Claude Code's `acceptEdits`, `auto`, `dontAsk`, or `bypassPermissions`) — if nothing in the danger pack matched and the only reason it's asking is a generic policy default, Bumper won't contradict an agent that's already been told not to interrupt you. A matched danger-pack rule (force-push, `npm publish`, secrets, `DROP TABLE`, `chmod 777`, `curl|sh`, ...) **always asks, regardless of mode** — those are exactly what Bumper exists to catch, auto/bypass mode or not. Automatic *deny* rules (like `rm -rf *`) also always apply — that's a silent hard block, not a popup. Currently only wired up for Claude Code; Cursor and Copilot CLI don't send a mode signal yet, so their ask-decisions always pause as normal.
+**The daemon must be running for protection to work.** If `bumper start` isn't running, hooks fail *open* — actions go through unchecked rather than getting stuck. Use `bumper autostart enable` to start the daemon automatically on login (Startup folder on Windows, launchd on macOS, systemd on Linux).
 
 ## Privacy
 
